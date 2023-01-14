@@ -7,6 +7,7 @@ from . import views
 urlpatterns = [
     path('projects/', views.ProjectList.as_view(), name="project-list"), # naming convention
     path('projects/<int:pk>/', views.ProjectDetail.as_view(), name="project-detail"),
+    path('pledges/', views.PledgeList.as_view(), name="pledge-list"),
 ]
 
 url_patterns = format_suffix_patterns(urlpatterns)

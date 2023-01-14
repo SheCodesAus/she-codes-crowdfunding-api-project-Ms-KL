@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 # models > serializers > views > urls projects > urls crowdfunding
 
-from .models import Project #added
+from .models import Project, Pledge #added
 
 class ProjectSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
@@ -18,5 +18,9 @@ class ProjectSerializer(serializers.Serializer):
     def create(self, validated_data):
         return Project.objects.create(**validated_data) # ** take everything in the dic and process it as pairs... eg key=value
 
-
+class PledgeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pledge
+        fields = ['id','amount','comment','anonymous','project','supporter']
+        
 
