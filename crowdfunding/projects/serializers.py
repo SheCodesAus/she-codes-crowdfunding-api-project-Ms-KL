@@ -5,6 +5,10 @@ from rest_framework import serializers
 
 from .models import Project, Pledge #added
 
+class PledgeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pledge
+        fields = ['id','amount','comment','anonymous','project','supporter']
 class ProjectSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
     title = serializers.CharField()
@@ -17,10 +21,10 @@ class ProjectSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         return Project.objects.create(**validated_data) # ** take everything in the dic and process it as pairs... eg key=value
+    
+class ProjectDetailSerializer(ProjectSerializer):
+    pledges = PledgeSerializer(many=True, read_only=True)
+    # split out from Project Serializer to reduce amount of data fetching when viewing all projects
 
-class PledgeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Pledge
-        fields = ['id','amount','comment','anonymous','project','supporter']
-        
+
 

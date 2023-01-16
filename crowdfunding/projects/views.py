@@ -2,10 +2,10 @@ from django.shortcuts import render
 from rest_framework.views import APIView #added
 from rest_framework.response import Response #added
 from django.http import Http404
-from rest_framework import status, generics
 
+from rest_framework import status, generics
 from .models import Project, Pledge #added
-from .serializers import ProjectSerializer, PledgeSerializer #added
+from .serializers import ProjectSerializer, PledgeSerializer, ProjectDetailSerializer #added
 
 # Create your views here. #https://ccbv.co.uk/ # https://www.cdrf.co/ # https://www.cdrf.co/3.13/rest_framework.views/APIView.html
 
@@ -36,7 +36,7 @@ class ProjectDetail(APIView):
     
     def get(self, request, pk):
         project = self.get_object(pk)
-        serializer = ProjectSerializer(project)
+        serializer = ProjectDetailSerializer(project)
         return Response(serializer.data) #allows adding pk to urls
 
 class PledgeList(generics.ListCreateAPIView):
