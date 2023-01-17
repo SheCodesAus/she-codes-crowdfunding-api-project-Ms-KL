@@ -11,6 +11,10 @@ from .serializers import ProjectSerializer, PledgeSerializer, ProjectDetailSeria
 
 # models > serializers > views > project urls > crowdfunding urls
 
+# the below is templatey / boilerplate... you would change the word Project from below code to suit the new app
+# eg: ProjectList to Pledge list
+# PROJECT will always be long form
+# PLEDGE will be the same, but the shortcut way
 class ProjectList(APIView):
     
     def get(self, request):
@@ -24,7 +28,11 @@ class ProjectList(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+
+# above is the same as:
+# class ProjectList(generics.ListCreateAPIView):
+#     queryset = Project.objects.all()
+#     serializer_class = ProjectSerializer
 
 class ProjectDetail(APIView):
 

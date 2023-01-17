@@ -6,6 +6,9 @@ from rest_framework import serializers
 from .models import Project, Pledge #added
 
 class PledgeSerializer(serializers.ModelSerializer):
+
+    # add specifications here or in models
+    # owner = serializers.CharField(max_length=200)
     class Meta:
         model = Pledge
         fields = ['id','amount','comment','anonymous','project','supporter']
