@@ -1,7 +1,13 @@
+# virtual envs
 venv/
 .venv/
+# Python temp files
 __pycache__/
+*.py[cod]
+*$py.class
+# settings files
 .DS_Store
-*.sqlite3
 *.vscode
+# project stored data
+*.sqlite3
 staticfiles
