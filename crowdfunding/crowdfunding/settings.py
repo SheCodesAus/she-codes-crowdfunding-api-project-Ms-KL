@@ -31,15 +31,22 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'projects.apps.ProjectsConfig', #added in 14/1
-    'rest_framework', #added in 14/1
+    'projects.apps.ProjectsConfig', #added 14/1
+    'rest_framework', #added 14/1
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'users.apps.UsersConfig', 
+    # added: created a users app (python manage.py startapp users) then added it to installed apps
+    # next: below 
 ]
+
+# added: after added the user app, instead of build in user, we change to user custom user instead.
+# next: update models in user
+AUTH_USER_MODEL = 'users.CustomUser'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

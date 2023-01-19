@@ -7,15 +7,10 @@ from rest_framework import status, generics
 from .models import Project, Pledge #added
 from .serializers import ProjectSerializer, PledgeSerializer, ProjectDetailSerializer #added
 
-# Create your views here. #https://ccbv.co.uk/ # https://www.cdrf.co/ # https://www.cdrf.co/3.13/rest_framework.views/APIView.html
-
-# models > serializers > views > project urls > crowdfunding urls
-
-# the below is templatey / boilerplate... you would change the word Project from below code to suit the new app
-# eg: ProjectList to Pledge list
-# PROJECT will always be long form
-# PLEDGE will be the same, but the shortcut way
-class ProjectList(APIView):
+# Create your views here. 
+# References:
+# https://ccbv.co.uk/ # https://www.cdrf.co/ # https://www.cdrf.co/3.13/rest_framework.views/APIView.html
+class ProjectList(APIView): # long form version / template
     
     def get(self, request):
         projects = Project.objects.all() # retrieves list of all projects
@@ -23,9 +18,12 @@ class ProjectList(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = ProjectSerializer(data=request.data) # serialise data for me
+        serializer = ProjectSerializer(data=request.data) # serialize data for me
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(owner=request.user) #add the owner to overcome error when adding project [missing owner]
+            # owner is readonly - cannot create the object
+            # serializer wont work because it wasn't given an owner and cannot do this
+            # add an owner serializer (Readonly)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -34,7 +32,7 @@ class ProjectList(APIView):
 #     queryset = Project.objects.all()
 #     serializer_class = ProjectSerializer
 
-class ProjectDetail(APIView):
+class ProjectDetail(APIView): #same as project, but shortcut - uses same boilerplate [quicker]
 
     def get_object(self, pk): #this pk is arbitrary 
         try:
@@ -50,3 +48,16 @@ class ProjectDetail(APIView):
 class PledgeList(generics.ListCreateAPIView):
     queryset = Pledge.objects.all()
     serializer_class = PledgeSerializer
+
+    def perform_create(self, serializer): # added to remove the need to input a supporter {automates to logged in user}
+        serializer.save(supporter=self.request.user)
+
+
+'''
+    FLOW:
+    
+    projects app > crowdfunding settings > project models > make / migrate > project serializers > project views > project urls > Crowdfunding urls
+    
+    user app > crowdfunding settings > user models > make / migrate > project models > make / migrate > create superuser > user serializer > user view > user urls > crowdfunding urls
+    
+'''

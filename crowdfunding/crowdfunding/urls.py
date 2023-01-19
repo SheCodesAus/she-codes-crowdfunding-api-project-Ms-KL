@@ -18,5 +18,17 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api-auth/', include('rest_framework.urls')), # adds login button
+    path('users/', include('users.urls')),
     path("", include('projects.urls')), #getting access to project urls
 ]
+
+
+'''
+    FLOW:
+    
+    projects app > crowdfunding settings > project models > make / migrate > project serializers > project views > project urls > Crowdfunding urls
+    
+    user app > crowdfunding settings > user models > make / migrate > project models > make / migrate > create superuser > user serializer > user view > user urls > crowdfunding urls
+    
+'''

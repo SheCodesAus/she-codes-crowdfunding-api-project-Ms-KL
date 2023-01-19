@@ -1,17 +1,16 @@
 from rest_framework import serializers
 # for every model, create a serializer. You can use a model serializer - like a model form. Can build itself off a model. Automate
 
-# models > serializers > views > urls projects > urls crowdfunding
-
 from .models import Project, Pledge #added
 
 class PledgeSerializer(serializers.ModelSerializer):
-
     # add specifications here or in models
-    # owner = serializers.CharField(max_length=200)
+    # owner = serializers.CharField(max_length=200) removed
     class Meta:
         model = Pledge
         fields = ['id','amount','comment','anonymous','project','supporter']
+        read_only_fields = ['id', 'supporter'] # added to remove the needs to input a supporter {automates to logged in user}
+
 class ProjectSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
     title = serializers.CharField()
@@ -20,7 +19,10 @@ class ProjectSerializer(serializers.Serializer):
     image = serializers.URLField()
     is_open = serializers.BooleanField()
     date_created = serializers.DateTimeField()
-    owner = serializers.CharField(max_length=200)
+    # owner = serializers.CharField(max_length=200) - removed to replace with a readonly field
+    owner = serializers.ReadOnlyField(source='owner_id')
+    # saving a query to the db.
+    # now when someone creates a project, the logged in user becomes the owner
 
     def create(self, validated_data):
         return Project.objects.create(**validated_data) # ** take everything in the dic and process it as pairs... eg key=value
@@ -28,6 +30,14 @@ class ProjectSerializer(serializers.Serializer):
 class ProjectDetailSerializer(ProjectSerializer):
     pledges = PledgeSerializer(many=True, read_only=True)
     # split out from Project Serializer to reduce amount of data fetching when viewing all projects
+    # put it in views
 
 
+'''
+    FLOW:
+    
+    projects app > crowdfunding settings > project models > make / migrate > project serializers > project views > project urls > Crowdfunding urls
+    
+    user app > crowdfunding settings > user models > make / migrate > project models > make / migrate > create superuser > user serializer > user view > user urls > crowdfunding urls
+'''
 
