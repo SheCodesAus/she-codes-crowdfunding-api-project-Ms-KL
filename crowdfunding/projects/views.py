@@ -1,16 +1,18 @@
 from django.shortcuts import render
-from rest_framework.views import APIView #added
-from rest_framework.response import Response #added
+from rest_framework.views import APIView
+from rest_framework.response import Response 
 from django.http import Http404
 
-from rest_framework import status, generics
-from .models import Project, Pledge #added
-from .serializers import ProjectSerializer, PledgeSerializer, ProjectDetailSerializer #added
+from rest_framework import status, generics, permissions
+from .models import Project, Pledge 
+from .serializers import ProjectSerializer, PledgeSerializer, ProjectDetailSerializer 
+from .permissions import IsOwnerOrReadOnly
 
 # Create your views here. 
 # References:
 # https://ccbv.co.uk/ # https://www.cdrf.co/ # https://www.cdrf.co/3.13/rest_framework.views/APIView.html
 class ProjectList(APIView): # long form version / template
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly] # only logged in users can create new projects
     
     def get(self, request):
         projects = Project.objects.all() # retrieves list of all projects
@@ -33,10 +35,16 @@ class ProjectList(APIView): # long form version / template
 #     serializer_class = ProjectSerializer
 
 class ProjectDetail(APIView): #same as project, but shortcut - uses same boilerplate [quicker]
+    permission_classes = [
+        permissions.IsAuthenticatedOrReadOnly,
+        IsOwnerOrReadOnly
+    ]
 
-    def get_object(self, pk): #this pk is arbitrary 
+    def get_object(self, pk): #this pk is arbitrary
         try:
-            return Project.objects.get(pk=pk) #primary key = the value we have been given. pk from the url will be parsed to this as the variable
+            project = Project.objects.get(pk=pk) #primary key = the value we have been given. pk from the url will be parsed to this as the variable
+            self.check_object_permissions(self.request, project)
+            return project
         except Project.DoesNotExist:
             raise Http404
     
@@ -44,6 +52,20 @@ class ProjectDetail(APIView): #same as project, but shortcut - uses same boilerp
         project = self.get_object(pk)
         serializer = ProjectDetailSerializer(project)
         return Response(serializer.data) #allows adding pk to urls
+    
+    def put(self, request, pk): # added to correspond with update project serializer
+        project = self.get_object(pk)
+        data = request.data
+        serializer = ProjectDetailSerializer(
+            instance=project,
+            data=data,
+                partial=True
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
+
 
 class PledgeList(generics.ListCreateAPIView):
     queryset = Pledge.objects.all()
@@ -53,11 +75,15 @@ class PledgeList(generics.ListCreateAPIView):
         serializer.save(supporter=self.request.user)
 
 
+
 '''
     FLOW:
     
     projects app > crowdfunding settings > project models > make / migrate > project serializers > project views > project urls > Crowdfunding urls
     
+    USERS:
     user app > crowdfunding settings > user models > make / migrate > project models > make / migrate > create superuser > user serializer > user view > user urls > crowdfunding urls
-    
+
+    Permissions:
+    project views > project serializers > project views > project permissions > project views
 '''
