@@ -6,6 +6,18 @@ from .models import CustomUser
 
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
+    fieldsets = (
+        *UserAdmin.fieldsets,
+        (
+            'Additional User Information',
+            {
+                'fields':(
+                    'bio','avatar',
+                )
+            }
+        )
+    )
+
 
 admin.site.register(CustomUser, CustomUserAdmin)
 

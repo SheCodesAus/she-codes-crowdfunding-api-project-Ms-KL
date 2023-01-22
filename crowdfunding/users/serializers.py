@@ -5,7 +5,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('id', 'username', 'email', 'is_active', 'password')
+        fields = ('id', 'username', 'email', 'is_active', 'password','bio','avatar')
 
         extra_kwargs = {
             'email':{
@@ -39,6 +39,7 @@ class PasswordChangeSerializer(serializers.Serializer):
     TODO:
     - finish change password
     - make creation view like a form (similar to pledges)
+    - edit profile
     
     ** FLOW **
 
