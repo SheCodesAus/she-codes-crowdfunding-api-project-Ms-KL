@@ -16,11 +16,11 @@ class CustomUserSerializer(serializers.ModelSerializer):
             'is_active':{'read_only':True}
         }
 
-        def create(self, validated_data):
-            user = CustomUser.objects.create(**validated_data)
-            user.set_password(validated_data['password']) # protects password
-            user.save()
-            return user
+    def create(self, validated_data):
+        user = CustomUser.objects.create(**validated_data)
+        user.set_password(validated_data['password']) # protects password
+        user.save()
+        return user
 
 # Start of Change Password
 class PasswordChangeSerializer(serializers.Serializer):
