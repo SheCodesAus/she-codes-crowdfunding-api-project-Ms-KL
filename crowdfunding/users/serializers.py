@@ -1,60 +1,70 @@
 from rest_framework import serializers
 from .models import CustomUser
 
-# class CustomUserSerializer(serializers.Serializer):
-#     id = serializers.ReadOnlyField()
-#     username = serializers.CharField(max_length=150)
-#     # cling data (clean data - check to see if username is email)
-#     email = serializers.EmailField()
-#     # added 21/1 below
-#     is_active = serializers.BooleanField()
-
-    # def create(self, validated_data):
-    #     return CustomUser.objects.create(**validated_data)
-    #     # what is **validated_data
-
-# CONVERT TO MODEL SERIALIZER
-# https://www.django-rest-framework.org/api-guide/serializers/#additional-keyword-arguments
-# 
 class CustomUserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
 
     class Meta:
         model = CustomUser
-        fields = ('id', 'username', 'email', 'password')
-    
-    def create(self, validated_data):
-        user = CustomUser.objects.create(
-            username=validated_data['username'],
-            email=validated_data['email'],
-        )
-        user.set_password(validated_data['password'])
-        user.save()
-        return user
+        fields = ('id', 'username', 'email', 'is_active', 'password')
 
-'''
-TODO: change password, validate changes
+        extra_kwargs = {
+            'email':{
+                'allow_blank':False,
+                'required':True},
+            'password':{
+                'write_only':True},
+            'is_active':{'read_only':True}
+        }
 
-https://studygyaan.com/django/django-rest-framework-tutorial-change-password-and-reset-password
+        def create(self, validated_data):
+            user = CustomUser.objects.create(**validated_data)
+            user.set_password(validated_data['password']) # protects password
+            user.save()
+            return user
 
-https://www.grepper.com/tpc/django+rest+framework+serializer+hash+password
-
-https://stackoverflow.com/questions/38845051/how-to-update-user-password-in-django-rest-framework
-
-TODO: add a view etc to the below.
-
-'''
-class PasswordSerializer(serializers.Serializer):
+# Start of Change Password
+class PasswordChangeSerializer(serializers.Serializer):
     """
     Serializer for password change endpoint.
     """
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
 
+# Notes on process (For own info)
+
 '''
-    FLOW:
+    NOTE: 
+    - Changed original code to Model Serializer, added extra kwarg restrictions, set password for security
+    - https://www.django-rest-framework.org/api-guide/serializers/#additional-keyword-arguments
+    TODO:
+    - finish change password
+    - make creation view like a form (similar to pledges)
     
+    ** FLOW **
+
     projects app > crowdfunding settings > project models > make / migrate > project serializers > project views > project urls > Crowdfunding urls
     
     user app > crowdfunding settings > user models > make / migrate > project models > make / migrate > create superuser > user serializer > user view > user urls > crowdfunding urls
+'''
+
+# --- ORIGINAL CLASS SETUP CODE
+'''
+    class CustomUserSerializer(serializers.Serializer):
+        id = serializers.ReadOnlyField()
+        username = serializers.CharField(max_length=150)
+        # cling data (clean data - check to see if username is email)
+        email = serializers.EmailField()
+        # added 21/1 below
+        is_active = serializers.BooleanField()
+
+        def create(self, validated_data):
+            return CustomUser.objects.create(**validated_data)
+            # what is **validated_data
+    
+    TODO:
+    - set password > done
+    - try Model Serializer > done
+    - enforce field completion > done
+    - change/reset password
+    - validate changes
 '''
