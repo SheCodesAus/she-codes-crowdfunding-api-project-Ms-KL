@@ -20,6 +20,10 @@ class Project(models.Model):
         on_delete=models.CASCADE, 
         related_name='owner_projects'
         )
+    
+    @property
+    def sum_pledges(self):
+        return self.pledges.aggregate(sum=models.Sum('amount'))['sum']
 
 class Pledge(models.Model):
     amount = models.IntegerField()

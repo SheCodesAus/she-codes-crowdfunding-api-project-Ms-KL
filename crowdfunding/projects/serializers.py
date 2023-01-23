@@ -23,6 +23,7 @@ class ProjectSerializer(serializers.Serializer):
     owner = serializers.ReadOnlyField(source='owner_id')
     # saving a query to the db.
     # now when someone creates a project, the logged in user becomes the owner
+    sum_pledges = serializers.ReadOnlyField()
 
     def create(self, validated_data):
         return Project.objects.create(**validated_data) # ** take everything in the dic and process it as pairs... eg key=value
