@@ -23,7 +23,8 @@ class CustomUserSerializer(serializers.ModelSerializer):
         return user
 
 # Start of Change Password
-class PasswordChangeSerializer(serializers.Serializer):
+class ChangePasswordSerializer(serializers.Serializer):
+    model = CustomUser
     """
     Serializer for password change endpoint.
     """
