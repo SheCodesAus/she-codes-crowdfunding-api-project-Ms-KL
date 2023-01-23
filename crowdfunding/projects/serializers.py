@@ -6,10 +6,19 @@ from .models import Project, Pledge #added
 class PledgeSerializer(serializers.ModelSerializer):
     # add specifications here or in models
     # owner = serializers.CharField(max_length=200) removed
+    supporter = serializers.SerializerMethodField()
     class Meta:
         model = Pledge
         fields = ['id','amount','comment','anonymous','project','supporter']
         read_only_fields = ['id', 'supporter'] # added to remove the needs to input a supporter {automates to logged in user}
+
+    #https://www.django-rest-framework.org/api-guide/fields/#serializermethodfield
+    #https://www.django-rest-framework.org/api-guide/serializers/#dealing-with-complex-data-types
+    def get_supporter(self, instance):
+        if instance.anonymous:
+            return "anonymous"
+        else:
+            return instance.supporter.username
 
 class ProjectSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
@@ -56,4 +65,19 @@ class ProjectDetailSerializer(ProjectSerializer):
     Permissions:
     project views > project serializers > project views > project permissions > project views
 '''
+
+# alternative solution:
+    # https://dev.to/abdenasser/my-personal-django-rest-framework-serializer-notes-2i22
+    # https://testdriven.io/tips/ed79fa08-6834-4827-b00d-2609205129e0/
+    # https://www.django-rest-framework.org/api-guide/serializers/#overriding-serialization-and-deserialization-behavior
+
+    # def to_representation(self, instance):
+    #     data = super().to_representation(instance) # allows you to change what is shown after serialization
+    #     if data.get('anonymous') and data.get('supporter'): #if anon = true and supporter exists
+    #         data.pop('supporter') # delete supporter value from return (not db)
+    #         data['supporter'] = "anonymous"  # return "anonymous" instead
+    #     elif data.get('anonymous') == False:
+    #         data.pop('supporter')
+    #         data['supporter'] = data['username']
+    #     return data
 
