@@ -1,21 +1,32 @@
 from rest_framework import serializers
-# for every model, create a serializer. You can use a model serializer - like a model form. Can build itself off a model. Automate
+# for every model, create a serializer. 
+# You can use a model serializer - like a model form. 
+# Can build itself off a model. Automates
 
-from .models import Project, Pledge #added
+from .models import Project, Pledge
 
 class PledgeSerializer(serializers.ModelSerializer):
-    # add specifications here or in models
-    # owner = serializers.CharField(max_length=200) removed
     supporter = serializers.SerializerMethodField()
     class Meta:
         model = Pledge
         fields = ['id','amount','comment','anonymous','project','supporter']
         read_only_fields = ['id', 'supporter'] # added to remove the needs to input a supporter {automates to logged in user}
 
-    #https://www.django-rest-framework.org/api-guide/fields/#serializermethodfield
-    #https://www.django-rest-framework.org/api-guide/serializers/#dealing-with-complex-data-types
-    #https://stackoverflow.com/a/69160982
+
     def get_supporter(self, instance):
+        '''
+        * SerializerMethodField *
+
+        if the instance (supporter) has anonymous = True:
+            replace True with "anonymous"
+        else
+            replace False with the username of the supporter
+        
+        References:
+        https://www.django-rest-framework.org/api-guide/fields/#serializermethodfield
+        https://www.django-rest-framework.org/api-guide/serializers/#dealing-with-complex-data-types
+        https://stackoverflow.com/a/69160982
+        '''
         if instance.anonymous:
             return "anonymous"
         else:
@@ -29,16 +40,19 @@ class ProjectSerializer(serializers.Serializer):
     image = serializers.URLField()
     is_open = serializers.BooleanField()
     date_created = serializers.DateTimeField()
-    # owner = serializers.CharField(max_length=200) - removed to replace with a readonly field
-    owner = serializers.ReadOnlyField(source='owner_id')
-    # saving a query to the db.
-    # now when someone creates a project, the logged in user becomes the owner
+    owner = serializers.ReadOnlyField(source='owner_id') 
+    '''
+    - owner = serializers.CharField(max_length=200) replaced w/ read only field
+    - saving a query to the db.
+    - when someone creates a project, the logged in user becomes the owner
+    '''
     sum_pledges = serializers.ReadOnlyField()
 
     def create(self, validated_data):
-        return Project.objects.create(**validated_data) # ** take everything in the dic and process it as pairs... eg key=value
+        return Project.objects.create(**validated_data) 
+        # ** take everything in the dic and process it as pairs... eg key=value
     
-    def update(self, instance, validated_data): # adds an update method to serializer
+    def update(self, instance, validated_data):
         instance.title = validated_data.get('title', instance.title)
         instance.description = validated_data.get('description', instance.description)
         instance.goal = validated_data.get('goal', instance.goal)
@@ -67,7 +81,8 @@ class ProjectDetailSerializer(ProjectSerializer):
     project views > project serializers > project views > project permissions > project views
 '''
 
-# alternative solution:
+# alternative solution to SerializerMethodField():
+
     # https://dev.to/abdenasser/my-personal-django-rest-framework-serializer-notes-2i22
     # https://testdriven.io/tips/ed79fa08-6834-4827-b00d-2609205129e0/
     # https://www.django-rest-framework.org/api-guide/serializers/#overriding-serialization-and-deserialization-behavior
