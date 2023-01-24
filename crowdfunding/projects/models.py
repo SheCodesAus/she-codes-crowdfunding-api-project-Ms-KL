@@ -27,6 +27,11 @@ class Project(models.Model):
         return self.pledges.aggregate(sum=models.Sum('amount'))['sum']
 
 class Pledge(models.Model):
+    '''
+    Foreign key triggers a rename to a number/id. Eg supporter will be supporter ID
+    on_delete alternatives: is null or protect as alternatives instead of delete to protect that data
+
+    '''
     amount = models.IntegerField()
     comment = models.CharField(max_length=200)
     anonymous = models.BooleanField()
@@ -38,11 +43,6 @@ class Pledge(models.Model):
         User,
         on_delete=models.CASCADE, 
         related_name='supporter_pledges'
-        '''
-        Foreign key triggers a rename to a number/id. Eg supporter will be supporter ID
-        on_delete alternatives: is null or protect as alternatives instead of delete to protect that data
-
-        '''
     )
 
 '''
