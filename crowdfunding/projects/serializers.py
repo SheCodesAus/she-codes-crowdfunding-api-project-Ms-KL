@@ -14,6 +14,7 @@ class PledgeSerializer(serializers.ModelSerializer):
 
     #https://www.django-rest-framework.org/api-guide/fields/#serializermethodfield
     #https://www.django-rest-framework.org/api-guide/serializers/#dealing-with-complex-data-types
+    #https://stackoverflow.com/a/69160982
     def get_supporter(self, instance):
         if instance.anonymous:
             return "anonymous"
