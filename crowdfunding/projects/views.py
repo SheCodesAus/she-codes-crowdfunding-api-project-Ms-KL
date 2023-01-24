@@ -68,11 +68,29 @@ class ProjectDetail(APIView): #same as project, but shortcut - uses same boilerp
 
 
 class PledgeList(generics.ListCreateAPIView):
+    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     queryset = Pledge.objects.all()
     serializer_class = PledgeSerializer
 
     def perform_create(self, serializer): # added to remove the need to input a supporter {automates to logged in user}
         serializer.save(supporter=self.request.user)
+
+class UpdatePledgeView(generics.RetrieveUpdateAPIView):
+    queryset = Pledge.objects.all()
+    serializer_class = PledgeSerializer
+    
+    def put(self, request, pk): # copied from project serializer
+        pledge = self.get_object(pk)
+        data = request.data
+        serializer = PledgeSerializer(
+            instance=pledge,
+            data=data,
+                partial=True
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
 
 
 

@@ -12,7 +12,6 @@ class PledgeSerializer(serializers.ModelSerializer):
         fields = ['id','amount','comment','anonymous','project','supporter']
         read_only_fields = ['id', 'supporter'] # added to remove the needs to input a supporter {automates to logged in user}
 
-
     def get_supporter(self, instance):
         '''
         * SerializerMethodField *
