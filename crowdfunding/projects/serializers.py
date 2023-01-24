@@ -31,6 +31,12 @@ class PledgeSerializer(serializers.ModelSerializer):
         else:
             return instance.supporter.username
 
+class PledgeDetailSerializer(PledgeSerializer):
+    class Meta:
+        model = Pledge
+        fields = ['id','amount','comment','anonymous','project','supporter']
+        read_only_fields = ['id', 'supporter','amount','project']
+
 class ProjectSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
     title = serializers.CharField()

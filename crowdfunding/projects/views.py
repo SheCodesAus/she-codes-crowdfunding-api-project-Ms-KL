@@ -5,7 +5,7 @@ from django.http import Http404
 
 from rest_framework import status, generics, permissions
 from .models import Project, Pledge 
-from .serializers import ProjectSerializer, PledgeSerializer, ProjectDetailSerializer 
+from .serializers import ProjectSerializer, PledgeSerializer, ProjectDetailSerializer , PledgeDetailSerializer
 from .permissions import IsOwnerOrReadOnly, IsSupporterOrReadOnly
 
 # Create your views here. 
@@ -68,16 +68,17 @@ class ProjectDetail(APIView): #same as project, but shortcut - uses same boilerp
 
 
 class PledgeList(generics.ListCreateAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     queryset = Pledge.objects.all()
     serializer_class = PledgeSerializer
 
     def perform_create(self, serializer): # added to remove the need to input a supporter {automates to logged in user}
         serializer.save(supporter=self.request.user)
 
-class UpdatePledgeView(generics.RetrieveUpdateAPIView):
+class PledgeDetailView(generics.RetrieveUpdateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsSupporterOrReadOnly]
     queryset = Pledge.objects.all()
-    serializer_class = PledgeSerializer
+    serializer_class = PledgeDetailSerializer
     
     # https://www.cdrf.co/3.13/rest_framework.generics/RetrieveUpdateAPIView.html
     def put(self, request, pk): # copied from project serializer
