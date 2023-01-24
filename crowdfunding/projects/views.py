@@ -65,6 +65,11 @@ class ProjectDetail(APIView): #same as project, but shortcut - uses same boilerp
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors)
+    
+    def delete(self, request, pk):
+        project = self.get_object(pk)
+        project.delete()
+        return Response("Project Deleted", status=status.HTTP_204_NO_CONTENT)
 
 class PledgeList(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
