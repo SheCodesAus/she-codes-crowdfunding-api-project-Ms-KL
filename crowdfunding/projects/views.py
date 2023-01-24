@@ -6,7 +6,7 @@ from django.http import Http404
 from rest_framework import status, generics, permissions
 from .models import Project, Pledge 
 from .serializers import ProjectSerializer, PledgeSerializer, ProjectDetailSerializer 
-from .permissions import IsOwnerOrReadOnly
+from .permissions import IsOwnerOrReadOnly, IsSupporterOrReadOnly
 
 # Create your views here. 
 # References:
@@ -68,7 +68,6 @@ class ProjectDetail(APIView): #same as project, but shortcut - uses same boilerp
 
 
 class PledgeList(generics.ListCreateAPIView):
-    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     queryset = Pledge.objects.all()
     serializer_class = PledgeSerializer
 
@@ -76,21 +75,13 @@ class PledgeList(generics.ListCreateAPIView):
         serializer.save(supporter=self.request.user)
 
 class UpdatePledgeView(generics.RetrieveUpdateAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsSupporterOrReadOnly]
     queryset = Pledge.objects.all()
     serializer_class = PledgeSerializer
     
+    # https://www.cdrf.co/3.13/rest_framework.generics/RetrieveUpdateAPIView.html
     def put(self, request, pk): # copied from project serializer
-        pledge = self.get_object(pk)
-        data = request.data
-        serializer = PledgeSerializer(
-            instance=pledge,
-            data=data,
-                partial=True
-        )
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors)
+        return self.update(request,pk)
 
 
 
