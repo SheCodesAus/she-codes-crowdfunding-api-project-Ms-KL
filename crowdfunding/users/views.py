@@ -6,13 +6,13 @@
 from django.http import Http404
 from rest_framework.views import APIView 
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, generics, permissions
 from rest_framework.permissions import IsAuthenticated #added 23/1
 
 
 from .models import CustomUser
-from .serializers import CustomUserSerializer, ChangePasswordSerializer
-
+from .serializers import CustomUserSerializer, ChangePasswordSerializer, CustomUserDetail
+from projects.permissions import IsOwnProfile
 
 class CustomUserList(APIView):
 
@@ -29,34 +29,39 @@ class CustomUserList(APIView):
             return Response(serializer.data)
         return Response(serializer.errors)
     
-class CustomUserDetail(APIView):
+# class CustomUserDetail(APIView):
 
-    def get_object(self,pk):
-        try:
-            return CustomUser.objects.get(pk=pk)
-        except CustomUser.DoesNotExist:
-            raise Http404
+#     def get_object(self,pk):
+#         try:
+#             return CustomUser.objects.get(pk=pk)
+#         except CustomUser.DoesNotExist:
+#             raise Http404
     
-    def get(self, request, pk):
-        user = self.get_object(pk)
-        serializer = CustomUserSerializer(user)
-        return Response(serializer.data)
+#     def get(self, request, pk):
+#         user = self.get_object(pk)
+#         serializer = CustomUserSerializer(user)
+#         return Response(serializer.data)
     
-    # copied from projects > views.py > project detail > def put
-    # https://www.django-rest-framework.org/tutorial/3-class-based-views/
-    def put(self, request, pk):
-        user = self.get_object(pk)
-        data = request.data # this is dict. need to add restriction to password change here as updated password does not hash from here
-        data.pop('password', None) # if a password is added to the json file to be PUT, it will remove it so it doesn't update
-        serializer = CustomUserSerializer(
-            instance = user,
-            data=data,
-                partial=True
-        )
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors)
+#     # copied from projects > views.py > project detail > def put
+#     # https://www.django-rest-framework.org/tutorial/3-class-based-views/
+#     def put(self, request, pk):
+#         user = self.get_object(pk)
+#         data = request.data # this is dict. need to add restriction to password change here as updated password does not hash from here
+#         data.pop('password', None) # if a password is added to the json file to be PUT, it will remove it so it doesn't update
+#         serializer = CustomUserSerializer(
+#             instance = user,
+#             data=data,
+#                 partial=True
+#         )
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)
+#         return Response(serializer.errors)
+
+class CustomUserDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnProfile]
+    queryset = CustomUser.objects.all()
+    serializer_class = CustomUserDetail
 
 class ChangePasswordView(APIView):
     # https://www.django-rest-framework.org/api-guide/views/
