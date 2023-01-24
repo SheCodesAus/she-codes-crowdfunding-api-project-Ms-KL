@@ -66,7 +66,6 @@ class ProjectDetail(APIView): #same as project, but shortcut - uses same boilerp
             return Response(serializer.data)
         return Response(serializer.errors)
 
-
 class PledgeList(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     queryset = Pledge.objects.all()
@@ -75,15 +74,12 @@ class PledgeList(generics.ListCreateAPIView):
     def perform_create(self, serializer): # added to remove the need to input a supporter {automates to logged in user}
         serializer.save(supporter=self.request.user)
 
-class PledgeDetailView(generics.RetrieveUpdateAPIView):
+class PledgeDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsSupporterOrReadOnly]
     queryset = Pledge.objects.all()
     serializer_class = PledgeDetailSerializer
-    
-    # https://www.cdrf.co/3.13/rest_framework.generics/RetrieveUpdateAPIView.html
-    def put(self, request, pk): # copied from project serializer
-        return self.update(request,pk)
-
+# http://www.tomchristie.com/rest-framework-2-docs/tutorial/3-class-based-views
+# https://www.cdrf.co/3.1/rest_framework.generics/RetrieveUpdateDestroyAPIView.html
 
 
 '''
@@ -97,3 +93,15 @@ class PledgeDetailView(generics.RetrieveUpdateAPIView):
     Permissions:
     project views > project serializers > project views > project permissions > project views
 '''
+
+# Removed from PledgeDetailView due to RetrieveUpdateDestroyAPIView
+    
+    # # https://www.cdrf.co/3.13/rest_framework.generics/RetrieveUpdateAPIView.html
+    # def put(self, request, pk): # copied from project serializer
+    #     return self.update(request,pk)
+    
+    # # http://www.tomchristie.com/rest-framework-2-docs/tutorial/3-class-based-views
+    # def delete(self, request, pk):
+    #     pledge = self.get_object()
+    #     pledge.delete()
+    #     return Response("Pledge Deleted", status=status.HTTP_204_NO_CONTENT)
