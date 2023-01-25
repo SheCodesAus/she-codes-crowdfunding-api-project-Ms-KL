@@ -10,10 +10,6 @@ from .permissions import IsOwnerOrReadOnly, IsSupporterOrReadOnly
 
 from rest_framework.exceptions import NotFound
 
-# from django.http import HttpResponse
-# def error404(request, exception):
-#     return HttpResponse("Sorry, no tree lovers here!", status=404)
-
 # Create your views here. 
 # References:
 # https://ccbv.co.uk/ # https://www.cdrf.co/ # https://www.cdrf.co/3.13/rest_framework.views/APIView.html
@@ -127,3 +123,8 @@ class PledgeDetailView(generics.RetrieveUpdateDestroyAPIView):
     #     pledge = self.get_object()
     #     pledge.delete()
     #     return Response("Pledge Deleted", status=status.HTTP_204_NO_CONTENT)
+
+# This didnt work:
+# from django.http import HttpResponse
+# def error404(request, exception):
+#     return HttpResponse("Sorry, no tree lovers here!", status=404)
