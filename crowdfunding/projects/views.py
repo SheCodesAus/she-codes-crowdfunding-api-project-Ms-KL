@@ -8,6 +8,12 @@ from .models import Project, Pledge
 from .serializers import ProjectSerializer, PledgeSerializer, ProjectDetailSerializer , PledgeDetailSerializer
 from .permissions import IsOwnerOrReadOnly, IsSupporterOrReadOnly
 
+from rest_framework.exceptions import NotFound
+
+# from django.http import HttpResponse
+# def error404(request, exception):
+#     return HttpResponse("Sorry, no tree lovers here!", status=404)
+
 # Create your views here. 
 # References:
 # https://ccbv.co.uk/ # https://www.cdrf.co/ # https://www.cdrf.co/3.13/rest_framework.views/APIView.html
@@ -46,12 +52,20 @@ class ProjectDetail(APIView): #same as project, but shortcut - uses same boilerp
             self.check_object_permissions(self.request, project)
             return project
         except Project.DoesNotExist:
-            raise Http404
+            raise Http404()
+
     
     def get(self, request, pk):
-        project = self.get_object(pk)
-        serializer = ProjectDetailSerializer(project)
-        return Response(serializer.data) #allows adding pk to urls
+        # project = self.get_object(pk)
+        # serializer = ProjectDetailSerializer(project)
+        # return Response(serializer.data) #allows adding pk to urls
+        try:
+            project = Project.objects.get(pk=pk)
+            self.check_object_permissions(request, project)
+            serializer = ProjectDetailSerializer(project)
+            return Response(serializer.data)
+        except Project.DoesNotExist:
+            raise NotFound("Sorry, no tree-hugging projects to contribute to here! Head to the Projects page to find one.")
     
     def put(self, request, pk): # added to correspond with update project serializer
         project = self.get_object(pk)
@@ -83,6 +97,9 @@ class PledgeDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsSupporterOrReadOnly]
     queryset = Pledge.objects.all()
     serializer_class = PledgeDetailSerializer
+
+    #TODO: figure out 404 message for RetrieveUpdateDestroyAPIView
+
 # http://www.tomchristie.com/rest-framework-2-docs/tutorial/3-class-based-views
 # https://www.cdrf.co/3.1/rest_framework.generics/RetrieveUpdateDestroyAPIView.html
 

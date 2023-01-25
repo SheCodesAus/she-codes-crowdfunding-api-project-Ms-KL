@@ -17,6 +17,17 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.authtoken.views import obtain_auth_token
 
+# 404 Handling ----
+# https://pytutorial.com/django-http-response-not-found/
+from django.http import HttpResponseNotFound
+
+def error_404(request, exception):
+    return HttpResponseNotFound("<h1>Sorry, no tree-huggers here!</h1>Head to our homepage to find one.")
+
+handler404 = error_404
+
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')), # adds login button
