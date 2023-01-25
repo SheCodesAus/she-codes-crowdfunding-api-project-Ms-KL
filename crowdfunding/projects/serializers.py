@@ -72,7 +72,7 @@ class ProjectSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
     title = serializers.CharField()
     description = serializers.CharField(max_length=None)
-    goal = serializers.DecimalField(max_digits=10, decimal_places=2)
+    goal = serializers.IntegerField() #want to set a min of 1
     image = serializers.URLField()
     is_open = serializers.BooleanField()
     date_created = serializers.DateTimeField()
