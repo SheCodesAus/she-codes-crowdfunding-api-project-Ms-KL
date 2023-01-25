@@ -72,7 +72,7 @@ class ProjectSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
     title = serializers.CharField()
     description = serializers.CharField(max_length=None)
-    goal = serializers.IntegerField()
+    goal = serializers.DecimalField(max_digits=10, decimal_places=2)
     image = serializers.URLField()
     is_open = serializers.BooleanField()
     date_created = serializers.DateTimeField()
@@ -83,6 +83,7 @@ class ProjectSerializer(serializers.Serializer):
     - when someone creates a project, the logged in user becomes the owner
     '''
     sum_pledges = serializers.ReadOnlyField()
+    goal_vs_pledges = serializers.ReadOnlyField()
 
     def create(self, validated_data):
         return Project.objects.create(**validated_data) 

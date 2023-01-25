@@ -9,7 +9,7 @@ User = get_user_model() # added to use the user
 class Project(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
-    goal = models.IntegerField() #want to set a min of 1
+    goal = models.DecimalField(max_digits=10, decimal_places=2) #want to set a min of 1
     image = models.URLField()
     is_open = models.BooleanField() #alt = is_active or status
     date_created = models.DateTimeField(auto_now_add=True) #TIP: auto_now_add=True... will update to time when created
@@ -25,6 +25,18 @@ class Project(models.Model):
         Calculates the total of each pledge for each project.
         '''
         return self.pledges.aggregate(sum=models.Sum('amount'))['sum']
+
+    @property
+    def goal_vs_pledges(self):
+        '''
+        Looks at the goal and compares to the total number of pledges.
+        '''
+        goal_balance = self.goal - self.sum_pledges
+        
+        if goal_balance <= 0:
+            return f"Congratulations! {self.title} project has been funded with {self.sum_pledges} worth of pledges!"
+        else:
+            return f"There's {goal_balance} left to raise until the goal of {self.goal} is reached!"
     
     def __str__(self):
         '''
@@ -40,7 +52,7 @@ class Pledge(models.Model):
     on_delete alternatives: is null or protect as alternatives instead of delete to protect that data
 
     '''
-    amount = models.IntegerField()
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
     comment = models.CharField(max_length=200)
     anonymous = models.BooleanField()
     project = models.ForeignKey(
