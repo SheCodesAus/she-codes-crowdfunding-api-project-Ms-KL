@@ -6,6 +6,21 @@ from rest_framework import serializers
 from .models import Project, Pledge
 
 class PledgeSerializer(serializers.ModelSerializer):
+    '''
+    SlugRelatedField:
+    changing the way project title displays in GET request. Displays the title of the project and not the id # using slug (human readable label)
+
+    https://www.django-rest-framework.org/api-guide/relations/#slugrelatedfield
+
+    https://docs.djangoproject.com/en/4.1/topics/db/queries/#retrieving-all-objects
+
+    https://www.django-rest-framework.org/api-guide/relations/
+
+    '''
+    project = serializers.SlugRelatedField(
+        queryset = Project.objects.all(),
+        slug_field='title'
+    )
     supporter = serializers.SerializerMethodField()
     class Meta:
         model = Pledge
@@ -32,10 +47,26 @@ class PledgeSerializer(serializers.ModelSerializer):
             return instance.supporter.username
 
 class PledgeDetailSerializer(PledgeSerializer):
+    '''
+    changing the way project title displays in POST or PUT request. Displays the title of the project and not the id # using slug (human readable label)
+
+    https://www.django-rest-framework.org/api-guide/relations/#slugrelatedfield
+
+    https://docs.djangoproject.com/en/4.1/topics/db/queries/#retrieving-all-objects
+
+    https://www.django-rest-framework.org/api-guide/relations/
+
+    '''
+
+    project = serializers.SlugRelatedField(
+        queryset = Project.objects.all(),
+        slug_field='title'
+    )
     class Meta:
         model = Pledge
         fields = ['id','amount','comment','anonymous','project','supporter']
         read_only_fields = ['id', 'supporter','amount','project']
+    
 
 class ProjectSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()

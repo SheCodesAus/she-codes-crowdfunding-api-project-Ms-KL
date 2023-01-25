@@ -22,6 +22,12 @@ class CustomUserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
+class CustomUserDetail(CustomUserSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ('id', 'username', 'email', 'is_active','bio','avatar')
+        read_only_fields = ['id']
+
 # Start of Change Password
 
 class ChangePasswordSerializer(serializers.Serializer):

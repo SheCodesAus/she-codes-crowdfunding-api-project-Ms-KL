@@ -25,6 +25,14 @@ class Project(models.Model):
         Calculates the total of each pledge for each project.
         '''
         return self.pledges.aggregate(sum=models.Sum('amount'))['sum']
+    
+    def __str__(self):
+        '''
+        Changing representation of project object id to title so when ModelSerializer form is rendered, the title of the project will display, not the ID number.
+        
+        Same way as in admin portal from django project
+        '''
+        return self.title
 
 class Pledge(models.Model):
     '''
@@ -38,7 +46,8 @@ class Pledge(models.Model):
     project = models.ForeignKey(
         Project, 
         on_delete=models.CASCADE, 
-        related_name="pledges")
+        related_name="pledges",
+        )
     supporter = models.ForeignKey( 
         User,
         on_delete=models.CASCADE, 
