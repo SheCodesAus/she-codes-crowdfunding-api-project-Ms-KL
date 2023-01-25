@@ -7,7 +7,8 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model() # added to use the user
 class Project(models.Model):
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, unique=True, error_messages={'unique':"This title is already in use."})
+    # this is throwing a 500 Integrity Error. How to fix?
     description = models.TextField()
     goal = models.IntegerField() #want to set a min of 1
     image = models.URLField()
