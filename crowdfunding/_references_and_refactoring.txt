@@ -146,6 +146,16 @@ Refactored & Removed Code [for reference]
 
     projects > views.py
 
+        class PledgeList(generics.ListCreateAPIView):
+
+            def get(self, request):
+                pledges = self.get_queryset()
+                if not pledges:
+                    return Response({"message": "Sorry, no tree-huggers here! Pick a project and send a pledge to get things started!"}, status=status.HTTP_204_NO_CONTENT)
+
+                serializer = self.get_serializer(pledges, many=True)
+                return Response(serializer.data)
+
         Project List Refactored to ListCreateAPIView
 
             class ProjectList(APIView): # long form version / template

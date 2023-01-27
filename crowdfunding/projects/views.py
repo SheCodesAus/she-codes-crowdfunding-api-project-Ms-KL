@@ -24,7 +24,7 @@ class ProjectList(generics.ListCreateAPIView):
         # auto adds userid as owner
 
     def get(self, request):
-        projects = self.get_queryset()
+        projects = self.filter_queryset(self.get_queryset())
         if not projects:
             return Response({"message": "Sorry, no tree-hugging projects here!"}, status=status.HTTP_204_NO_CONTENT)
 
@@ -58,19 +58,21 @@ class PledgeList(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     queryset = Pledge.objects.all()
     serializer_class = PledgeSerializer
-    filterset_fields = ['supporter', 'project']
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ('supporter', 'project')
+
 
     def perform_create(self, serializer):
         # added to remove the need to input a supporter {automates to logged in user}
         serializer.save(supporter=self.request.user)
 
-    def get(self, request):
-        pledges = self.get_queryset()
-        if not pledges:
-            return Response({"message": "Sorry, no tree-huggers here! Pick a project and send a pledge to get things started!"}, status=status.HTTP_204_NO_CONTENT)
+        def get(self, request):
+            pledges = self.filter_queryset(self.get_queryset())
+            if not pledges:
+                return Response({"message": "Sorry, no tree-huggers here! Pick a project and send a pledge to get things started!"}, status=status.HTTP_204_NO_CONTENT)
 
-        serializer = self.get_serializer(pledges, many=True)
-        return Response(serializer.data)
+            serializer = self.get_serializer(pledges, many=True)
+            return Response(serializer.data)
 
 class PledgeDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsSupporterOrReadOnly]
