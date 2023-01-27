@@ -14,11 +14,11 @@ class Project(models.Model):
     is_open = models.BooleanField() #alt = is_active or status
     date_created = models.DateTimeField(auto_now_add=True) #TIP: auto_now_add=True... will update to time when created
     owner = models.ForeignKey( # the below connects the ID of the owner to the owner_projects
-        User, 
-        on_delete=models.CASCADE, 
+        User,
+        on_delete=models.CASCADE,
         related_name='owner_projects'
         )
-    
+
     @property
     def sum_pledges(self):
         '''
@@ -36,16 +36,16 @@ class Project(models.Model):
         Looks at the goal and compares to the total number of pledges.
         '''
         goal_balance = self.goal - self.sum_pledges
-        
+
         if goal_balance <= 0:
             return f"Congratulations! {self.title} project has been funded with {self.sum_pledges} worth of pledges!"
         else:
             return f"There's {goal_balance} left to raise until the goal of {self.goal} is reached!"
-    
+
     def __str__(self):
         '''
         Changing representation of project object id to title so when ModelSerializer form is rendered, the title of the project will display, not the ID number.
-        
+
         Same way as in admin portal from django project
         '''
         return self.title
@@ -61,20 +61,20 @@ class Pledge(models.Model):
     comment = models.CharField(max_length=200)
     anonymous = models.BooleanField()
     project = models.ForeignKey(
-        Project, 
-        on_delete=models.CASCADE, 
+        Project,
+        on_delete=models.CASCADE,
         related_name="pledges",
         )
-    supporter = models.ForeignKey( 
+    supporter = models.ForeignKey(
         User,
-        on_delete=models.CASCADE, 
+        on_delete=models.CASCADE,
         related_name='supporter_pledges'
     )
 
 '''
     FLOW:
-    
+
     projects app > crowdfunding settings > project models > make / migrate > project serializers > project views > project urls > Crowdfunding urls
-    
+
     user app > crowdfunding settings > user models > make / migrate > project models > make / migrate > create superuser > user serializer > user view > user urls > crowdfunding urls
 '''

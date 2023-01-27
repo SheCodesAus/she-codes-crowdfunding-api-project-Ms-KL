@@ -12,39 +12,38 @@ from rest_framework.exceptions import NotFound
 from django.db import IntegrityError #unique = True handling
 
 from django_filters.rest_framework import DjangoFilterBackend
-class ProjectList(APIView): # long form version / template
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly] # only logged in users can create new projects
+
+class ProjectList(generics.ListCreateAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
+    filterset_fields = ['is_open', 'owner']
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+        # auto adds userid as owner
 
     def get(self, request):
-        projects = Project.objects.all() # retrieves list of all projects
-        serializer = ProjectSerializer(projects, many=True) #tell it to do many because list
-
+        projects = self.get_queryset()
         if not projects:
             return Response({"message": "Sorry, no tree-hugging projects here!"}, status=status.HTTP_204_NO_CONTENT)
 
+        serializer = self.get_serializer(projects, many=True)
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = ProjectSerializer(data=request.data) # serialize data for me
+        serializer = ProjectSerializer(data=request.data)
+        # serialize data for me
         if serializer.is_valid():
             try:
                 serializer.save(owner=request.user)
-                # add the owner to overcome error when adding project [missing owner]
-                # owner is readonly - cannot create the object
-                # serializer wont work because it wasn't given an owner and cannot do this
-                # add an owner serializer (Readonly)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
-            except IntegrityError: #responding to unique field
+            except IntegrityError:
+                #responding to unique field
                 return Response({"error":"This Project title already exists. Please enter another."}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# NOTE: above is the same as:
-    # class ProjectList(generics.ListCreateAPIView):
-    #     queryset = Project.objects.all()
-    #     serializer_class = ProjectSerializer
-
 class ProjectDetail(APIView):
-    #same as project, but shortcut - uses same boilerplate [quicker]
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly,
         IsOwnerOrReadOnly
@@ -62,18 +61,17 @@ class ProjectDetail(APIView):
     #---- TODO: >>>> can get_object and get be combined?
 
     def get(self, request, pk):
-        # project = self.get_object(pk)
-        # serializer = ProjectDetailSerializer(project)
-        # return Response(serializer.data) #allows adding pk to urls
         try:
             project = Project.objects.get(pk=pk)
             self.check_object_permissions(request, project)
             serializer = ProjectDetailSerializer(project)
             return Response(serializer.data)
+            #allows adding pk to urls
         except Project.DoesNotExist:
             raise NotFound("Sorry, no tree-hugger project here!")
 
-    def put(self, request, pk): # added to correspond with update project serializer
+    def put(self, request, pk):
+        # added to correspond with update project serializer
         project = self.get_object(pk)
         data = request.data
         serializer = ProjectDetailSerializer(
@@ -97,7 +95,8 @@ class PledgeList(generics.ListCreateAPIView):
     serializer_class = PledgeSerializer
     filterset_fields = ['supporter', 'project']
 
-    def perform_create(self, serializer): # added to remove the need to input a supporter {automates to logged in user}
+    def perform_create(self, serializer):
+        # added to remove the need to input a supporter {automates to logged in user}
         serializer.save(supporter=self.request.user)
 
     def get(self, request):
@@ -143,3 +142,32 @@ class PledgeDetailView(generics.RetrieveUpdateDestroyAPIView):
     Permissions:
     project views > project serializers > project views > project permissions > project views
 '''
+
+# Project List Refactored to ListCreateAPIView
+# -------------- Old Code Below:
+
+# class ProjectList(APIView): # long form version / template
+#     permission_classes = [permissions.IsAuthenticatedOrReadOnly] # only logged in users can create new projects
+
+#     def get(self, request):
+#         projects = Project.objects.all() # retrieves list of all projects
+#         serializer = ProjectSerializer(projects, many=True) #tell it to do many because list
+
+#         if not projects:
+#             return Response({"message": "Sorry, no tree-hugging projects here!"}, status=status.HTTP_204_NO_CONTENT)
+
+#         return Response(serializer.data)
+
+    # def post(self, request):
+    #     serializer = ProjectSerializer(data=request.data) # serialize data for me
+    #     if serializer.is_valid():
+    #         try:
+    #             serializer.save(owner=request.user)
+    #             # add the owner to overcome error when adding project [missing owner]
+    #             # owner is readonly - cannot create the object
+    #             # serializer wont work because it wasn't given an owner and cannot do this
+    #             # add an owner serializer (Readonly)
+    #             return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #         except IntegrityError: #responding to unique field
+    #             return Response({"error":"This Project title already exists. Please enter another."}, status=status.HTTP_400_BAD_REQUEST)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
