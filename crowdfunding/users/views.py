@@ -8,13 +8,20 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, generics, permissions
 from rest_framework.permissions import IsAuthenticated #added 23/1
-
+from rest_framework import validators #uniquevalidator error handling
 
 from .models import CustomUser
 from .serializers import CustomUserSerializer, ChangePasswordSerializer, CustomUserDetail
 from projects.permissions import IsOwnProfile
 
 class CustomUserList(APIView):
+    '''
+    email unique validation checking resources:
+    
+    - https://www.django-rest-framework.org/api-guide/exceptions/#validationerror
+    - https://www.django-rest-framework.org/api-guide/serializers/#field-level-validation
+    - https://www.django-rest-framework.org/api-guide/status-codes/
+    '''
 
     def get(self, request):
         users = CustomUser.objects.all()
@@ -26,8 +33,14 @@ class CustomUserList(APIView):
         serializer = CustomUserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            if 'email' in serializer.errors:
+                return Response({"error":"This email is associated with another user. Please login or choose an alternative email."}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response(
+                    serializer.errors, 
+                    status=status.HTTP_400_BAD_REQUEST)
     
 class CustomUserDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnProfile]

@@ -1,7 +1,11 @@
-from rest_framework import serializers
+from rest_framework import serializers, validators
 from .models import CustomUser
-
 class CustomUserSerializer(serializers.ModelSerializer):
+    '''
+    validator added as unique is not permitted in extra_kwargs
+    - https://stackoverflow.com/questions/65342238/django-rest-framework-extra-kwargs-fields-for-password-and-unique-email
+    - http://www.django-rest-framework.org/api-guide/validators/#uniquevalidator
+    '''
 
     class Meta:
         model = CustomUser
@@ -9,6 +13,8 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
         extra_kwargs = {
             'email':{
+                'validators':
+                [validators.UniqueValidator(queryset=CustomUser.objects.all())],
                 'allow_blank':False,
                 'required':True},
             'password':{
