@@ -11,6 +11,7 @@ from .permissions import IsOwnerOrReadOnly, IsSupporterOrReadOnly
 from rest_framework.exceptions import NotFound
 from django.db import IntegrityError #unique = True handling
 
+from django_filters.rest_framework import DjangoFilterBackend
 class ProjectList(APIView): # long form version / template
     permission_classes = [permissions.IsAuthenticatedOrReadOnly] # only logged in users can create new projects
 
@@ -94,6 +95,7 @@ class PledgeList(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     queryset = Pledge.objects.all()
     serializer_class = PledgeSerializer
+    filterset_fields = ['supporter', 'project']
 
     def perform_create(self, serializer): # added to remove the need to input a supporter {automates to logged in user}
         serializer.save(supporter=self.request.user)

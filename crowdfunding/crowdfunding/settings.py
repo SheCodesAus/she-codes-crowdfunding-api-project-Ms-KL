@@ -46,9 +46,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'users.apps.UsersConfig', 
+    'users.apps.UsersConfig',
+    'django_filters',
     # added: created a users app (python manage.py startapp users) then added it to installed apps
-    # next: below 
+    # next: below
 ]
 
 # added: after added the user app, instead of build in user, we change to user custom user instead.
@@ -146,5 +147,6 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-    ]
+    ],
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }
