@@ -1,27 +1,33 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
-from rest_framework.response import Response 
+from rest_framework.response import Response
 from django.http import Http404
 
 from rest_framework import status, generics, permissions
-from .models import Project, Pledge 
+from .models import Project, Pledge
 from .serializers import ProjectSerializer, PledgeSerializer, ProjectDetailSerializer , PledgeDetailSerializer
 from .permissions import IsOwnerOrReadOnly, IsSupporterOrReadOnly
 
 from rest_framework.exceptions import NotFound
 from django.db import IntegrityError #unique = True handling
 
-# Create your views here. 
+# Create your views here.
 # References:
 # https://ccbv.co.uk/ # https://www.cdrf.co/ # https://www.cdrf.co/3.13/rest_framework.views/APIView.html
 # https://docs.djangoproject.com/en/3.2/ref/models/fields/#django.db.models.Field.unique
 class ProjectList(APIView): # long form version / template
     permission_classes = [permissions.IsAuthenticatedOrReadOnly] # only logged in users can create new projects
-    
+
     def get(self, request):
+
         projects = Project.objects.all() # retrieves list of all projects
         serializer = ProjectSerializer(projects, many=True) #tell it to do many because list
+
+        if not projects:
+            return Response({"message": "Sorry, no Tree-Hugging projects here!"}, status=status.HTTP_204_NO_CONTENT)
+
         return Response(serializer.data)
+
 
     def post(self, request):
         serializer = ProjectSerializer(data=request.data) # serialize data for me
@@ -49,13 +55,15 @@ class ProjectDetail(APIView): #same as project, but shortcut - uses same boilerp
 
     def get_object(self, pk): #this pk is arbitrary
         try:
-            project = Project.objects.get(pk=pk) #primary key = the value we have been given. pk from the url will be parsed to this as the variable
+            project = Project.objects.get(pk=pk)
+            #primary key = the value we have been given. pk from the url will be parsed to this as the variable
             self.check_object_permissions(self.request, project)
             return project
         except Project.DoesNotExist:
-            raise Http404()
+            raise NotFound("Sorry, no Tree-Hugging project here!")
 
-    
+    #---- TODO: >>>> can get_object and get be combined?
+
     def get(self, request, pk):
         # project = self.get_object(pk)
         # serializer = ProjectDetailSerializer(project)
@@ -66,8 +74,8 @@ class ProjectDetail(APIView): #same as project, but shortcut - uses same boilerp
             serializer = ProjectDetailSerializer(project)
             return Response(serializer.data)
         except Project.DoesNotExist:
-            raise NotFound("Sorry, no tree-hugging projects to contribute to here! Head to the Projects page to find one.")
-    
+            raise NotFound("Sorry, no tree-hugger project here!")
+
     def put(self, request, pk): # added to correspond with update project serializer
         project = self.get_object(pk)
         data = request.data
@@ -80,7 +88,7 @@ class ProjectDetail(APIView): #same as project, but shortcut - uses same boilerp
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors)
-    
+
     def delete(self, request, pk):
         project = self.get_object(pk)
         project.delete()
@@ -94,12 +102,29 @@ class PledgeList(generics.ListCreateAPIView):
     def perform_create(self, serializer): # added to remove the need to input a supporter {automates to logged in user}
         serializer.save(supporter=self.request.user)
 
+    def get(self, request):
+        pledges = self.get_queryset()
+        if not pledges:
+            return Response({"message": "Sorry, no tree-huggers here! Pick a project and send a pledge to get things started!"}, status=status.HTTP_204_NO_CONTENT)
+
+        serializer = self.get_serializer(pledges, many=True)
+        return Response(serializer.data)
+
 class PledgeDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsSupporterOrReadOnly]
     queryset = Pledge.objects.all()
     serializer_class = PledgeDetailSerializer
 
-    #TODO: figure out 404 message for RetrieveUpdateDestroyAPIView
+    def handle_exception(self, exc):
+        '''
+        https://stackoverflow.com/questions/51836535/django-rest-framework-custom-message-for-404-errors
+        '''
+        if isinstance(exc, Http404):
+            return Response({'data': 'Sorry, no tree-hugging here!'},
+            status=status.HTTP_404_NOT_FOUND)
+        return super(PledgeDetailView, self).handle_exception(exc)
+
+    #TODO: >>>>>> custom 404 message for RetrieveUpdateDestroyAPIView
 
 # http://www.tomchristie.com/rest-framework-2-docs/tutorial/3-class-based-views
 # https://www.cdrf.co/3.1/rest_framework.generics/RetrieveUpdateDestroyAPIView.html
@@ -107,9 +132,9 @@ class PledgeDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 '''
     FLOW:
-    
+
     projects app > crowdfunding settings > project models > make / migrate > project serializers > project views > project urls > Crowdfunding urls
-    
+
     USERS:
     user app > crowdfunding settings > user models > make / migrate > project models > make / migrate > create superuser > user serializer > user view > user urls > crowdfunding urls
 
@@ -118,11 +143,11 @@ class PledgeDetailView(generics.RetrieveUpdateDestroyAPIView):
 '''
 
 # Removed from PledgeDetailView due to RetrieveUpdateDestroyAPIView
-    
+
     # # https://www.cdrf.co/3.13/rest_framework.generics/RetrieveUpdateAPIView.html
     # def put(self, request, pk): # copied from project serializer
     #     return self.update(request,pk)
-    
+
     # # http://www.tomchristie.com/rest-framework-2-docs/tutorial/3-class-based-views
     # def delete(self, request, pk):
     #     pledge = self.get_object()
