@@ -19,14 +19,3 @@ class IsOwnProfile(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
         return obj.id == request.user.id
-'''
-    FLOW:
-    
-    projects app > crowdfunding settings > project models > make / migrate > project serializers > project views > project urls > Crowdfunding urls
-    
-    USERS:
-    user app > crowdfunding settings > user models > make / migrate > project models > make / migrate > create superuser > user serializer > user view > user urls > crowdfunding urls
-
-    Permissions:
-    project views > project serializers > project views > project permissions > project views
-'''

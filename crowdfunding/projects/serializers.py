@@ -10,12 +10,6 @@ class PledgeSerializer(serializers.ModelSerializer):
     SlugRelatedField:
     changing the way project title displays in GET request. Displays the title of the project and not the id # using slug (human readable label)
 
-    https://www.django-rest-framework.org/api-guide/relations/#slugrelatedfield
-
-    https://docs.djangoproject.com/en/4.1/topics/db/queries/#retrieving-all-objects
-
-    https://www.django-rest-framework.org/api-guide/relations/
-
     '''
     project = serializers.SlugRelatedField(
         queryset = Project.objects.all(),
@@ -29,17 +23,11 @@ class PledgeSerializer(serializers.ModelSerializer):
 
     def get_supporter(self, instance):
         '''
-        * SerializerMethodField *
 
         if the instance (supporter) has anonymous = True:
             replace True with "anonymous"
         else
             replace False with the username of the supporter
-
-        References:
-        https://www.django-rest-framework.org/api-guide/fields/#serializermethodfield
-        https://www.django-rest-framework.org/api-guide/serializers/#dealing-with-complex-data-types
-        https://stackoverflow.com/a/69160982
         '''
         if instance.anonymous:
             return "anonymous"
@@ -48,14 +36,7 @@ class PledgeSerializer(serializers.ModelSerializer):
 
 class PledgeDetailSerializer(PledgeSerializer):
     '''
-    changing the way project title displays in POST or PUT request. Displays the title of the project and not the id # using slug (human readable label)
-
-    https://www.django-rest-framework.org/api-guide/relations/#slugrelatedfield
-
-    https://docs.djangoproject.com/en/4.1/topics/db/queries/#retrieving-all-objects
-
-    https://www.django-rest-framework.org/api-guide/relations/
-
+    Slug:changing the way project title displays in POST or PUT request. Displays the title of the project and not the id # using slug (human readable label)
     '''
 
     project = serializers.SlugRelatedField(
@@ -104,33 +85,4 @@ class ProjectDetailSerializer(ProjectSerializer):
     pledges = PledgeSerializer(many=True, read_only=True)
     # split out from Project Serializer to reduce amount of data fetching when viewing all projects
     # put it in views
-
-
-'''
-    FLOW:
-
-    projects app > crowdfunding settings > project models > make / migrate > project serializers > project views > project urls > Crowdfunding urls
-
-    USERS:
-    user app > crowdfunding settings > user models > make / migrate > project models > make / migrate > create superuser > user serializer > user view > user urls > crowdfunding urls
-
-    Permissions:
-    project views > project serializers > project views > project permissions > project views
-'''
-
-# alternative solution to SerializerMethodField():
-
-    # https://dev.to/abdenasser/my-personal-django-rest-framework-serializer-notes-2i22
-    # https://testdriven.io/tips/ed79fa08-6834-4827-b00d-2609205129e0/
-    # https://www.django-rest-framework.org/api-guide/serializers/#overriding-serialization-and-deserialization-behavior
-
-    # def to_representation(self, instance):
-    #     data = super().to_representation(instance) # allows you to change what is shown after serialization
-    #     if data.get('anonymous') and data.get('supporter'): #if anon = true and supporter exists
-    #         data.pop('supporter') # delete supporter value from return (not db)
-    #         data['supporter'] = "anonymous"  # return "anonymous" instead
-    #     elif data.get('anonymous') == False:
-    #         data.pop('supporter')
-    #         data['supporter'] = data['username']
-    #     return data
 

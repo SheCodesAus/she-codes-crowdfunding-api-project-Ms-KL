@@ -15,13 +15,6 @@ from .serializers import CustomUserSerializer, ChangePasswordSerializer, CustomU
 from projects.permissions import IsOwnProfile
 
 class CustomUserList(APIView):
-    '''
-    email unique validation checking resources:
-
-    - https://www.django-rest-framework.org/api-guide/exceptions/#validationerror
-    - https://www.django-rest-framework.org/api-guide/serializers/#field-level-validation
-    - https://www.django-rest-framework.org/api-guide/status-codes/
-    '''
 
     def get(self, request):
         users = CustomUser.objects.all()
@@ -48,19 +41,13 @@ class CustomUserDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CustomUserDetail
 
     def handle_exception(self, exc):
-        '''
-        https://stackoverflow.com/questions/51836535/django-rest-framework-custom-message-for-404-errors
-        '''
         if isinstance(exc, Http404):
             return Response({'data': 'Sorry, no tree-hugger here!'},
             status=status.HTTP_404_NOT_FOUND)
         return super(CustomUserDetailView, self).handle_exception(exc)
 
-    #TODO: figure out 404 message for RetrieveUpdateDestroyAPIView
-
 class ChangePasswordView(APIView):
-    # https://www.django-rest-framework.org/api-guide/views/
-    # https://stackoverflow.com/a/38846554
+
     """
     An endpoint for changing password.
     """
@@ -84,42 +71,3 @@ class ChangePasswordView(APIView):
             return Response({"message":"Password Change Successful"}, status=status.HTTP_204_NO_CONTENT)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-'''
-    FLOW:
-
-    projects app > crowdfunding settings > project models > make / migrate > project serializers > project views > project urls > Crowdfunding urls
-
-    user app > crowdfunding settings > user models > make / migrate > project models > make / migrate > create superuser > user serializer > user view > user urls > crowdfunding urls
-
-'''
-# alt solution:
-# class CustomUserDetail(APIView):
-
-#     def get_object(self,pk):
-#         try:
-#             return CustomUser.objects.get(pk=pk)
-#         except CustomUser.DoesNotExist:
-#             raise Http404
-
-#     def get(self, request, pk):
-#         user = self.get_object(pk)
-#         serializer = CustomUserSerializer(user)
-#         return Response(serializer.data)
-
-#     # copied from projects > views.py > project detail > def put
-#     # https://www.django-rest-framework.org/tutorial/3-class-based-views/
-#     def put(self, request, pk):
-#         user = self.get_object(pk)
-#         data = request.data # this is dict. need to add restriction to password change here as updated password does not hash from here
-#         data.pop('password', None) # if a password is added to the json file to be PUT, it will remove it so it doesn't update
-#         serializer = CustomUserSerializer(
-#             instance = user,
-#             data=data,
-#                 partial=True
-#         )
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data)
-#         return Response(serializer.errors)

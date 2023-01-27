@@ -1,0 +1,233 @@
+
+This text file contains:
+    - References to online resources used to construct Code
+    - Refactors and Removed Code (for reference)
+    - Flow of data for reference
+
+REFERENCES:
+
+   crowdfunding > urls.py
+        404 Handling ----
+        https://pytutorial.com/django-http-response-not-found/
+
+    users > serializers.py
+
+        class CustomUserSerializer(serializers.ModelSerializer)
+            validator added as unique is not permitted in extra_kwargs
+            https://stackoverflow.com/questions/65342238/django-rest-framework-extra-kwargs-fields-for-password-and-unique-email
+            http://www.django-rest-framework.org/api-guide/validators/#uniquevalidator
+            https://www.django-rest-framework.org/api-guide/serializers/#additional-keyword-arguments
+
+
+        class ChangePasswordSerializer(serializers.Serializer):
+            https://studygyaan.com/django/django-rest-framework-tutorial-change-password-and-reset-password
+            https://www.grepper.com/tpc/django+rest+framework+serializer+hash+password
+            https://stackoverflow.com/questions/38845051/how-to-update-user-password-in-django-rest-framework
+            https://stackoverflow.com/a/38846554
+
+    users > views.py
+
+        class CustomUserList(APIView):
+            email unique validation checking resources:
+            https://www.django-rest-framework.org/api-guide/exceptions/#validationerror
+            https://www.django-rest-framework.org/api-guide/serializers/#field-level-validation
+            https://www.django-rest-framework.org/api-guide/status-codes/
+
+        class CustomUserDetailView(generics.RetrieveUpdateDestroyAPIView)
+
+            def handle_exception(self, exc):
+            https://stackoverflow.com/questions/51836535/django-rest-framework-custom-message-for-404-errors
+
+        class ChangePasswordView(APIView):
+            https://www.django-rest-framework.org/api-guide/views/
+            https://stackoverflow.com/a/38846554
+
+    projects > views.py
+
+        General Resources:
+            https://ccbv.co.uk/
+            https://www.cdrf.co/
+            https://www.cdrf.co/3.13/rest_framework.views/APIView.html
+            https://docs.djangoproject.com/en/3.2/ref/models/fields/#django.db.models.Field.unique
+
+        class PledgeDetailView(generics.RetrieveUpdateDestroyAPIView)
+        class ProjectDetail(generics.RetrieveUpdateDestroyAPIView)
+
+            handle_exception:
+                https://stackoverflow.com/questions/51836535/django-rest-framework-custom-message-for-404-errors
+                http://www.tomchristie.com/rest-framework-2-docs/tutorial/3-class-based-views
+                https://www.cdrf.co/3.1/rest_framework.generics/RetrieveUpdateDestroyAPIView.html
+
+    projects > serializers.py
+
+        class PledgeSerializer(serializers.ModelSerializer)
+
+            SlugRelatedField:
+                https://www.django-rest-framework.org/api-guide/relations/#slugrelatedfield
+                https://docs.djangoproject.com/en/4.1/topics/db/queries/#retrieving-all-objects
+                https://www.django-rest-framework.org/api-guide/relations/
+
+            SerializerMethodField:
+                get_supporter
+                    https://www.django-rest-framework.org/api-guide/fields/#serializermethodfield
+                    https://www.django-rest-framework.org/api-guide/serializers/#dealing-with-complex-data-types
+                    https://stackoverflow.com/a/69160982
+
+        class PledgeDetailSerializer(PledgeSerializer)
+
+            SlugField:
+                Slug:changing the way project title displays in POST or PUT request. Displays the title of the project and not the id # using slug (human readable label)
+                https://www.django-rest-framework.org/api-guide/relations/#slugrelatedfield
+                https://docs.djangoproject.com/en/4.1/topics/db/queries/#retrieving-all-objects
+                https://www.django-rest-framework.org/api-guide/relations/
+
+Refactored & Removed Code [for reference]
+
+    users > views.py
+
+        alt solution:
+        class CustomUserDetail(APIView):
+
+            def get_object(self,pk):
+                try:
+                    return CustomUser.objects.get(pk=pk)
+                except CustomUser.DoesNotExist:
+                    raise Http404
+
+            def get(self, request, pk):
+                user = self.get_object(pk)
+                serializer = CustomUserSerializer(user)
+                return Response(serializer.data)
+
+            # copied from projects > views.py > project detail > def put
+            # https://www.django-rest-framework.org/tutorial/3-class-based-views/
+
+            def put(self, request, pk):
+                user = self.get_object(pk)
+                data = request.data
+
+                # this is dict. need to add restriction to password change here as updated password does not hash from here
+
+                data.pop('password', None)
+
+                # if a password is added to the json file to be PUT, it will remove it so it doesn't update
+
+                serializer = CustomUserSerializer(
+                    instance = user,
+                    data=data,
+                        partial=True
+                )
+
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(serializer.data)
+                return Response(serializer.errors)
+
+    projects > serializers.py
+
+        alternative solution to SerializerMethodField():
+
+            def to_representation(self, instance):
+                data = super().to_representation(instance)
+                    # allows you to change what is shown after serialization
+                if data.get('anonymous') and data.get('supporter'):
+                    #if anon = true and supporter exists
+                    data.pop('supporter') # delete supporter value from return (not db)
+                    data['supporter'] = "anonymous"  # return "anonymous" instead
+                elif data.get('anonymous') == False:
+                    data.pop('supporter')
+                    data['supporter'] = data['username']
+                return data
+
+            Resources:
+            https://dev.to/abdenasser/my-personal-django-rest-framework-serializer-notes-2i22
+            https://testdriven.io/tips/ed79fa08-6834-4827-b00d-2609205129e0/
+            https://www.django-rest-framework.org/api-guide/serializers/#overriding-serialization-and-deserialization-behavior
+
+    projects > views.py
+
+        Project List Refactored to ListCreateAPIView
+
+            class ProjectList(APIView): # long form version / template
+                permission_classes = [permissions.IsAuthenticatedOrReadOnly] # only logged in users can create new projects
+
+                def get(self, request):
+                    projects = Project.objects.all() # retrieves list of all projects
+                    serializer = ProjectSerializer(projects, many=True)
+                    #tell it to do many because list
+
+                    if not projects:
+                        return Response({"message": "Sorry, no tree-hugging projects here!"}, status=status.HTTP_204_NO_CONTENT)
+
+                    return Response(serializer.data)
+
+                def post(self, request):
+                    serializer = ProjectSerializer(data=request.data) # serialize data for me
+                    if serializer.is_valid():
+                        try:
+                            serializer.save(owner=request.user)
+                            # add the owner to overcome error when adding project [missing owner]
+                            # owner is readonly - cannot create the object
+                            # serializer wont work because it wasn't given an owner and cannot do this
+                            # add an owner serializer (Readonly)
+                            return Response(serializer.data, status=status.HTTP_201_CREATED)
+                        except IntegrityError: #responding to unique field
+                            return Response({"error":"This Project title already exists. Please enter another."}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        ProjectDetail refactored to RetrieveUpdateDestroyAPIView
+
+            class ProjectDetail(APIView):
+                permission_classes = [permissions.IsAuthenticatedOrReadOnly,
+                IsOwnerOrReadOnly]
+
+                def get_object(self, pk): #this pk is arbitrary
+                    try:
+                        project = Project.objects.get(pk=pk)
+                        #primary key = the value we have been given. pk from the url will be parsed to this as the variable
+                        self.check_object_permissions(self.request, project)
+                        return project
+                    except Project.DoesNotExist:
+                        raise NotFound("Sorry, no Tree-Hugging project here!")
+
+                #---- TODO: >>>> can get_object and get be combined?
+
+                def get(self, request, pk):
+                    try:
+                        project = Project.objects.get(pk=pk)
+                        self.check_object_permissions(request, project)
+                        serializer = ProjectDetailSerializer(project)
+                        return Response(serializer.data)
+                        #allows adding pk to urls
+                    except Project.DoesNotExist:
+                        raise NotFound("Sorry, no tree-hugger project here!")
+
+                def put(self, request, pk):
+                    # added to correspond with update project serializer
+                    project = self.get_object(pk)
+                    data = request.data
+                    serializer = ProjectDetailSerializer(
+                        instance=project,
+                        data=data,
+                        partial=True
+                    )
+                    if serializer.is_valid():
+                        serializer.save()
+                        return Response(serializer.data)
+                    return Response(serializer.errors)
+
+                def delete(self, request, pk):
+                    project = self.get_object(pk)
+                    project.delete()
+                    return Response("Project Deleted", status=status.HTTP_204_NO_CONTENT)
+
+FLOW:
+
+    PROJECTS:
+    projects app > crowdfunding settings > project models > make / migrate > project serializers > project views > project urls > Crowdfunding urls
+
+    USERS:
+    user app > crowdfunding settings > user models > make / migrate > project models > make / migrate > create superuser > user serializer > user view > user urls > crowdfunding urls
+
+    Permissions:
+    project views > project serializers > project views > project permissions > project views
