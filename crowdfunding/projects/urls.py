@@ -8,8 +8,7 @@ urlpatterns = [
     path('projects/', views.ProjectList.as_view(), name="project-list"), # naming convention
     path('projects/<int:pk>/', views.ProjectDetail.as_view(), name="project-detail"),
     path('pledges/', views.PledgeList.as_view(), name="pledge-list"),
-    path('pledges/<int:pk>/', views.PledgeDetailView.as_view(), name="pledge-detail"),
-    path('projects/<int:pk>/pledges/', views.PledgeList.as_view(), name="pledge-create")
+    path('pledges/<int:pk>/', views.PledgeDetailView.as_view(), name="pledge-detail")
 ]
 
 url_patterns = format_suffix_patterns(urlpatterns)
