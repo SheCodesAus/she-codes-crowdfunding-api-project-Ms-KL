@@ -9,10 +9,12 @@ from .serializers import ProjectSerializer, PledgeSerializer, ProjectDetailSeria
 from .permissions import IsOwnerOrReadOnly, IsSupporterOrReadOnly
 
 from rest_framework.exceptions import NotFound
+from django.db import IntegrityError #unique = True handling
 
 # Create your views here. 
 # References:
 # https://ccbv.co.uk/ # https://www.cdrf.co/ # https://www.cdrf.co/3.13/rest_framework.views/APIView.html
+# https://docs.djangoproject.com/en/3.2/ref/models/fields/#django.db.models.Field.unique
 class ProjectList(APIView): # long form version / template
     permission_classes = [permissions.IsAuthenticatedOrReadOnly] # only logged in users can create new projects
     
@@ -24,11 +26,14 @@ class ProjectList(APIView): # long form version / template
     def post(self, request):
         serializer = ProjectSerializer(data=request.data) # serialize data for me
         if serializer.is_valid():
-            serializer.save(owner=request.user) #add the owner to overcome error when adding project [missing owner]
-            # owner is readonly - cannot create the object
-            # serializer wont work because it wasn't given an owner and cannot do this
-            # add an owner serializer (Readonly)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            try:
+                serializer.save(owner=request.user) #add the owner to overcome error when adding project [missing owner]
+                # owner is readonly - cannot create the object
+                # serializer wont work because it wasn't given an owner and cannot do this
+                # add an owner serializer (Readonly)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            except IntegrityError: #responding to unique field
+                return Response({"error":"This Project title already exists. Please enter another."}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # above is the same as:
@@ -69,7 +74,7 @@ class ProjectDetail(APIView): #same as project, but shortcut - uses same boilerp
         serializer = ProjectDetailSerializer(
             instance=project,
             data=data,
-                partial=True
+            partial=True
         )
         if serializer.is_valid():
             serializer.save()

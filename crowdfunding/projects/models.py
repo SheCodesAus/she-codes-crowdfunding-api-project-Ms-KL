@@ -7,7 +7,7 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model() # added to use the user
 class Project(models.Model):
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, unique=True)
     description = models.TextField()
     goal = models.IntegerField() #want to set a min of 1
     image = models.URLField()
