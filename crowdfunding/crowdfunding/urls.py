@@ -22,7 +22,7 @@ from rest_framework.authtoken.views import obtain_auth_token
 from django.http import HttpResponseNotFound
 
 def error_404(request, exception):
-    return HttpResponseNotFound("<h1>Sorry, no tree-huggers here!</h1>Head to our homepage to find one.")
+    return HttpResponseNotFound("<h1>Sorry, no tree-huggers here!</h1>Head to our Projects page to find one.")
 
 handler404 = error_404
 
@@ -39,9 +39,9 @@ urlpatterns = [
 
 '''
     FLOW:
-    
+
     projects app > crowdfunding settings > project models > make / migrate > project serializers > project views > project urls > Crowdfunding urls
-    
+
     user app > crowdfunding settings > user models > make / migrate > project models > make / migrate > create superuser > user serializer > user view > user urls > crowdfunding urls
-    
+
 '''

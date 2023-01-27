@@ -11,29 +11,24 @@ from .permissions import IsOwnerOrReadOnly, IsSupporterOrReadOnly
 from rest_framework.exceptions import NotFound
 from django.db import IntegrityError #unique = True handling
 
-# Create your views here.
-# References:
-# https://ccbv.co.uk/ # https://www.cdrf.co/ # https://www.cdrf.co/3.13/rest_framework.views/APIView.html
-# https://docs.djangoproject.com/en/3.2/ref/models/fields/#django.db.models.Field.unique
 class ProjectList(APIView): # long form version / template
     permission_classes = [permissions.IsAuthenticatedOrReadOnly] # only logged in users can create new projects
 
     def get(self, request):
-
         projects = Project.objects.all() # retrieves list of all projects
         serializer = ProjectSerializer(projects, many=True) #tell it to do many because list
 
         if not projects:
-            return Response({"message": "Sorry, no Tree-Hugging projects here!"}, status=status.HTTP_204_NO_CONTENT)
+            return Response({"message": "Sorry, no tree-hugging projects here!"}, status=status.HTTP_204_NO_CONTENT)
 
         return Response(serializer.data)
-
 
     def post(self, request):
         serializer = ProjectSerializer(data=request.data) # serialize data for me
         if serializer.is_valid():
             try:
-                serializer.save(owner=request.user) #add the owner to overcome error when adding project [missing owner]
+                serializer.save(owner=request.user)
+                # add the owner to overcome error when adding project [missing owner]
                 # owner is readonly - cannot create the object
                 # serializer wont work because it wasn't given an owner and cannot do this
                 # add an owner serializer (Readonly)
@@ -42,12 +37,13 @@ class ProjectList(APIView): # long form version / template
                 return Response({"error":"This Project title already exists. Please enter another."}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# above is the same as:
-# class ProjectList(generics.ListCreateAPIView):
-#     queryset = Project.objects.all()
-#     serializer_class = ProjectSerializer
+# NOTE: above is the same as:
+    # class ProjectList(generics.ListCreateAPIView):
+    #     queryset = Project.objects.all()
+    #     serializer_class = ProjectSerializer
 
-class ProjectDetail(APIView): #same as project, but shortcut - uses same boilerplate [quicker]
+class ProjectDetail(APIView):
+    #same as project, but shortcut - uses same boilerplate [quicker]
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly,
         IsOwnerOrReadOnly
@@ -117,20 +113,24 @@ class PledgeDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def handle_exception(self, exc):
         '''
-        https://stackoverflow.com/questions/51836535/django-rest-framework-custom-message-for-404-errors
+        REFERENCES:
+            - https://stackoverflow.com/questions/51836535/django-rest-framework-custom-message-for-404-errors
+            - http://www.tomchristie.com/rest-framework-2-docs/tutorial/3-class-based-views
+            - https://www.cdrf.co/3.1/rest_framework.generics/RetrieveUpdateDestroyAPIView.html
         '''
         if isinstance(exc, Http404):
             return Response({'data': 'Sorry, no tree-hugging here!'},
             status=status.HTTP_404_NOT_FOUND)
         return super(PledgeDetailView, self).handle_exception(exc)
 
-    #TODO: >>>>>> custom 404 message for RetrieveUpdateDestroyAPIView
-
-# http://www.tomchristie.com/rest-framework-2-docs/tutorial/3-class-based-views
-# https://www.cdrf.co/3.1/rest_framework.generics/RetrieveUpdateDestroyAPIView.html
-
 
 '''
+    References:
+    - https://ccbv.co.uk/
+    - https://www.cdrf.co/
+    - https://www.cdrf.co/3.13/rest_framework.views/APIView.html
+    - https://docs.djangoproject.com/en/3.2/ref/models/fields/#django.db.models.Field.unique
+
     FLOW:
 
     projects app > crowdfunding settings > project models > make / migrate > project serializers > project views > project urls > Crowdfunding urls
@@ -141,20 +141,3 @@ class PledgeDetailView(generics.RetrieveUpdateDestroyAPIView):
     Permissions:
     project views > project serializers > project views > project permissions > project views
 '''
-
-# Removed from PledgeDetailView due to RetrieveUpdateDestroyAPIView
-
-    # # https://www.cdrf.co/3.13/rest_framework.generics/RetrieveUpdateAPIView.html
-    # def put(self, request, pk): # copied from project serializer
-    #     return self.update(request,pk)
-
-    # # http://www.tomchristie.com/rest-framework-2-docs/tutorial/3-class-based-views
-    # def delete(self, request, pk):
-    #     pledge = self.get_object()
-    #     pledge.delete()
-    #     return Response("Pledge Deleted", status=status.HTTP_204_NO_CONTENT)
-
-# This didnt work:
-# from django.http import HttpResponse
-# def error404(request, exception):
-#     return HttpResponse("Sorry, no tree lovers here!", status=404)
