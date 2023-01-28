@@ -23,14 +23,6 @@ class ProjectList(generics.ListCreateAPIView):
         serializer.save(owner=self.request.user)
         # auto adds userid as owner
 
-    def get(self, request):
-        projects = self.filter_queryset(self.get_queryset())
-        if not projects:
-            return Response({"message": "Sorry, no tree-hugging projects here!"}, status=status.HTTP_204_NO_CONTENT)
-
-        serializer = self.get_serializer(projects, many=True)
-        return Response(serializer.data)
-
     def post(self, request):
         serializer = ProjectSerializer(data=request.data)
         # serialize data for me
@@ -61,18 +53,9 @@ class PledgeList(generics.ListCreateAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ('supporter', 'project')
 
-
     def perform_create(self, serializer):
         # added to remove the need to input a supporter {automates to logged in user}
         serializer.save(supporter=self.request.user)
-
-        def get(self, request):
-            pledges = self.filter_queryset(self.get_queryset())
-            if not pledges:
-                return Response({"message": "Sorry, no tree-huggers here! Pick a project and send a pledge to get things started!"}, status=status.HTTP_204_NO_CONTENT)
-
-            serializer = self.get_serializer(pledges, many=True)
-            return Response(serializer.data)
 
 class PledgeDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsSupporterOrReadOnly]
