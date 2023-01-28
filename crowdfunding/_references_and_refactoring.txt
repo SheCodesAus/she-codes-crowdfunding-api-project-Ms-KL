@@ -156,6 +156,20 @@ Refactored & Removed Code [for reference]
                 serializer = self.get_serializer(pledges, many=True)
                 return Response(serializer.data)
 
+            this the error is a 200 not a 204. Which automatically returns
+
+            def get(self, request):
+                pledges = self.filter_queryset(self.get_queryset())
+                if not pledges:
+                    return Response({"message": "Sorry, no tree-huggers here! Pick a project and send a pledge to get things started!"}, status=status.HTTP_204_NO_CONTENT)
+                serializer = self.get_serializer(pledges, many=True)
+                return Response(serializer.data)
+
+                def get(self, request):
+                    pledges = self.filter_queryset(self.get_queryset())
+                    if not pledges:
+                        return Response({"HTTP_200_OK": "Sorry, no tree-huggers here!"}, status=status.HTTP_200_OK)
+
         Project List Refactored to ListCreateAPIView
 
             class ProjectList(APIView): # long form version / template
@@ -184,6 +198,16 @@ Refactored & Removed Code [for reference]
                         except IntegrityError: #responding to unique field
                             return Response({"error":"This Project title already exists. Please enter another."}, status=status.HTTP_400_BAD_REQUEST)
                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+                ---
+
+            def get(self, request):
+                projects = self.filter_queryset(self.get_queryset())
+                if not projects:
+                    return Response({"HTTP_200_OK": "Sorry, no tree-hugging projects here!"}, status=status.HTTP_200_OK)
+
+                serializer = self.get_serializer(projects, many=True)
+                return Response(serializer.data)
 
         ProjectDetail refactored to RetrieveUpdateDestroyAPIView
 
