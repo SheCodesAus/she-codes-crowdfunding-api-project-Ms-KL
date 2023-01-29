@@ -41,12 +41,44 @@ class ChangePasswordSerializer(serializers.Serializer):
     new_password = serializers.CharField(required=True)
 
 # alt:
+# class CustomUserDetail(CustomUserSerializer):
+#     comments = serializers.ReadOnlyField(source='comments_body')
+#     projects = serializers.ReadOnlyField(source='projects_title')
+#     pledges = serializers.ReadOnlyField(source='pledges_project')
+#     class Meta:
+#         model = CustomUser
+#         fields = ('id', 'username', 'email', 'is_active', 'bio','avatar','comments','projects','pledges')
+#         read_only_fields = ['id']
+
+# class CustomUserSerializer(serializers.ModelSerializer):
+#     comments = serializers.ReadOnlyField(source='comments_commenter')
+#     projects = serializers.ReadOnlyField(source='projects_owner')
+#     pledges = serializers.ReadOnlyField(source='pledges_supporter')
+
+#     class Meta:
+#         model = CustomUser
+#         # fields = ('id', 'username', 'email', 'is_active', 'password','bio','avatar')
+#         fields = ('id', 'username', 'email', 'is_active', 'password','bio','avatar','comments','projects','pledges')
+
+#         extra_kwargs = {
+#             'email':{
+#                 'validators':
+#                 [validators.UniqueValidator(queryset=CustomUser.objects.all())],
+#                 'allow_blank':False,
+#                 'required':True},
+#             'password':{
+#                 'write_only':True},
+#             'is_active':{'read_only':True}
+#         }
+
+
+
+# alt:
 
 # from projects.models import Project, Pledge, Comment
 # from projects.serializers import CommentSerializer, ProjectDetailSerializer, PledgeDetailSerializer
 
 # class CustomUserSerializer(serializers.ModelSerializer):
-    # alt:
     # owner = serializers.ReadOnlyField(source='customuser_comments')
     # projects = serializers.ReadOnlyField(source='customuser_projects')
     # pledges = serializers.ReadOnlyField(source='customuser_pledges')
