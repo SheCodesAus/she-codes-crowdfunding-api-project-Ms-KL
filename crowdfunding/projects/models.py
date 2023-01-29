@@ -31,16 +31,17 @@ class Project(models.Model):
             return pledge_sum
 
     @property
-    def goal_vs_pledges(self):
-        '''
-        Looks at the goal and compares to the total number of pledges.
-        '''
-        goal_balance = self.goal - self.sum_pledges
+    def goal_balance(self):
+        return self.goal - self.sum_pledges
 
-        if goal_balance <= 0:
-            return f"Congratulations! {self.title} project has been funded with {self.sum_pledges} worth of pledges!"
+    @property
+    def funding_status(self):
+        if self.goal_balance <= 0:
+            return f"Fully funded"
+        elif self.goal_balance == self.goal:
+            return f"No pledges received"
         else:
-            return f"There's {goal_balance} left to raise until the goal of {self.goal} is reached!"
+            return f"Partially funded"
 
     def __str__(self):
         '''

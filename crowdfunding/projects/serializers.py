@@ -51,11 +51,12 @@ class PledgeDetailSerializer(PledgeSerializer):
 class ProjectSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner_id')
     sum_pledges = serializers.ReadOnlyField()
-    goal_vs_pledges = serializers.ReadOnlyField()
+    goal_balance = serializers.ReadOnlyField()
+    funding_status = serializers.ReadOnlyField()
     class Meta:
         model = Project
-        fields = ['id','title','description','goal','image','is_open','date_created','owner','sum_pledges','goal_vs_pledges']
-        read_only_fields = ['id', 'owner','sum_pledges','goal_vs_pledges']
+        fields = ['id','title','description','goal','image','is_open','date_created','owner','sum_pledges','goal_balance','funding_status']
+        read_only_fields = ['id', 'owner','sum_pledges', 'goal_balance','funding_status']
 
 class CommentSerializer(serializers.ModelSerializer):
     commenter = serializers.ReadOnlyField(source='commenter.username')
