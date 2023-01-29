@@ -53,10 +53,14 @@ class ProjectSerializer(serializers.ModelSerializer):
     sum_pledges = serializers.ReadOnlyField()
     goal_balance = serializers.ReadOnlyField()
     funding_status = serializers.ReadOnlyField()
+    owner = serializers.SerializerMethodField()
     class Meta:
         model = Project
         fields = ['id','title','description','goal','image','is_open','date_created','owner','sum_pledges','goal_balance','funding_status']
         read_only_fields = ['id', 'owner','sum_pledges', 'goal_balance','funding_status']
+
+    def get_owner(self, instance):
+        return instance.owner.username
 
 class CommentSerializer(serializers.ModelSerializer):
     commenter = serializers.ReadOnlyField(source='commenter.username')
@@ -72,7 +76,8 @@ class ProjectDetailSerializer(ProjectSerializer):
 
     class Meta:
         model = Project
-        fields = ['pledges','comments']
+        fields = ['id','title','description','goal','image','is_open','date_created','owner','sum_pledges','goal_balance','funding_status','pledges','comments']
+        read_only_fields = ['id', 'owner','sum_pledges', 'goal_balance','funding_status']
 
 
     # split out from Project Serializer to reduce amount of data fetching when viewing all projects
