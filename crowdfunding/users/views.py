@@ -35,7 +35,7 @@ class CustomUserList(APIView):
                     serializer.errors,
                     status=status.HTTP_400_BAD_REQUEST)
 
-class CustomUserDetailView(generics.RetrieveUpdateDestroyAPIView):
+class CustomUserDetailView(generics.RetrieveUpdateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnProfile]
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserDetail

@@ -28,9 +28,9 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
 class CustomUserDetail(CustomUserSerializer):
     # below based on ProjectSerializer approach for owner
-    comments = CommentSerializer(many=True, source='commenter_comments')
-    pledges = PledgeSerializer(many=True, source='supporter_pledges')
-    projects = ProjectSerializer(many=True, source='owner_projects')
+    comments = CommentSerializer(many=True, source='commenter_comments', required=False)
+    pledges = PledgeSerializer(many=True, source='supporter_pledges', required=False)
+    projects = ProjectSerializer(many=True, source='owner_projects', required=False)
     class Meta:
         model = CustomUser
         fields = ('id', 'username', 'email', 'is_active','bio','avatar','comments','pledges','projects')
