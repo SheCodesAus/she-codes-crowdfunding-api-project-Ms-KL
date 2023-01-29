@@ -33,7 +33,7 @@ class CustomUserDetail(CustomUserSerializer):
     pledges = ProjectSerializer(many=True, source='owner_projects')
     class Meta:
         model = CustomUser
-        fields = ('id', 'username', 'email', 'is_active', 'password','bio','avatar','comments','pledges','projects')
+        fields = ('id', 'username', 'email', 'is_active','bio','avatar','comments','pledges','projects')
         read_only_fields = ['id']
 
 # Start of Change Password
