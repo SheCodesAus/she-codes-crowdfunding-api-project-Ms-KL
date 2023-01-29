@@ -4,9 +4,9 @@ from rest_framework.response import Response
 from django.http import Http404
 
 from rest_framework import status, generics, permissions
-from .models import Project, Pledge
-from .serializers import ProjectSerializer, PledgeSerializer, ProjectDetailSerializer , PledgeDetailSerializer
-from .permissions import IsOwnerOrReadOnly, IsSupporterOrReadOnly
+from .models import Project, Pledge, Comment
+from .serializers import ProjectSerializer, PledgeSerializer, ProjectDetailSerializer , PledgeDetailSerializer, CommentSerializer
+from .permissions import IsOwnerOrReadOnly, IsSupporterOrReadOnly, IsCommenterOrReadOnly
 
 from rest_framework.exceptions import NotFound
 from django.db import IntegrityError #unique = True handling
@@ -67,3 +67,16 @@ class PledgeDetailView(generics.RetrieveUpdateDestroyAPIView):
             return Response({'data': 'Sorry, no tree-hugging here!'},
             status=status.HTTP_404_NOT_FOUND)
         return super(PledgeDetailView, self).handle_exception(exc)
+
+class CommentList(generics.ListCreateAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(commenter=self.request.user)
+
+class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsCommenterOrReadOnly]

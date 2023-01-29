@@ -3,7 +3,7 @@ from rest_framework import serializers
 # You can use a model serializer - like a model form.
 # Can build itself off a model. Automates
 
-from .models import Project, Pledge
+from .models import Project, Pledge, Comment
 
 class PledgeSerializer(serializers.ModelSerializer):
     '''
@@ -48,41 +48,28 @@ class PledgeDetailSerializer(PledgeSerializer):
         fields = ['id','amount','comment','anonymous','project','supporter']
         read_only_fields = ['id', 'supporter','amount','project']
 
-
-class ProjectSerializer(serializers.Serializer):
-    id = serializers.ReadOnlyField()
-    title = serializers.CharField()
-    description = serializers.CharField(max_length=None)
-    goal = serializers.IntegerField() #want to set a min of 1
-    image = serializers.URLField()
-    is_open = serializers.BooleanField()
-    date_created = serializers.ReadOnlyField()
+class ProjectSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner_id')
-    '''
-    - owner = serializers.CharField(max_length=200) replaced w/ read only field
-    - saving a query to the db.
-    - when someone creates a project, the logged in user becomes the owner
-    '''
     sum_pledges = serializers.ReadOnlyField()
     goal_vs_pledges = serializers.ReadOnlyField()
+    class Meta:
+        model = Project
+        fields = ['id','title','description','goal','image','is_open','date_created','owner','sum_pledges','goal_vs_pledges','pledges','comments']
+        read_only_fields = ['id', 'owner','sum_pledges','goal_vs_pledges','pledges','comments']
 
-    def create(self, validated_data):
-        return Project.objects.create(**validated_data)
-        # ** take everything in the dic and process it as pairs... eg key=value
+class CommentSerializer(serializers.ModelSerializer):
+    commenter = serializers.ReadOnlyField(source='commenter.username')
+    class Meta:
+        model = Comment
+        fields = ['id','created','body','commenter','project']
+        read_only_fields = ['id', 'commenter'] # added to remove the needs to input a supporter {automates to logged in user}
 
-    def update(self, instance, validated_data):
-        instance.title = validated_data.get('title', instance.title)
-        instance.description = validated_data.get('description', instance.description)
-        instance.goal = validated_data.get('goal', instance.goal)
-        instance.image = validated_data.get('image', instance.image)
-        instance.is_open = validated_data.get('is_open', instance.is_open)
-        instance.date_created = validated_data.get('date_created', instance.date_created)
-        instance.owner = validated_data.get('owner', instance.owner)
-        instance.save()
-        return instance
 
 class ProjectDetailSerializer(ProjectSerializer):
     pledges = PledgeSerializer(many=True, read_only=True)
+    comments = CommentSerializer(many=True, read_only=True)
+
     # split out from Project Serializer to reduce amount of data fetching when viewing all projects
     # put it in views
+
 

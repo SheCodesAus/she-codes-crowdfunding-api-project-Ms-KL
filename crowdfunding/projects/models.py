@@ -70,3 +70,20 @@ class Pledge(models.Model):
         on_delete=models.CASCADE,
         related_name='supporter_pledges'
     )
+
+class Comment(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    body = models.TextField(blank=False)
+    commenter = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='commenter_comments'
+    )
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        related_name="comments",
+        )
+
+    class Meta:
+        ordering = ['created']
