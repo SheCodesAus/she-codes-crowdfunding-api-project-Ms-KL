@@ -1,27 +1,28 @@
 # {{ Communitree: DRF Crowdfunding Project }}
 
-Communitree is a <insert here>
+Welcome to Communitree, where tree-huggers gather to make a real impact on the urban forest of their community. Local Governments, schools and environmental organisations can create projects to raise funds for community busy bees and planting days/events. Supporters can pledge resources to help these projects. 
+
+<br>
 
 ---
 ## **TL:DR Links**
 ---
 
 ### **MVP Submission:**
-  - Submission Document (Canva): https://tinyurl.com/kg-drf-mvp-submission
-  - User Flow-Chart (Figma): https://tinyurl.com/kg-drf-mvp-userflow
+  - [Submission Document (Canva)](https://www.canva.com/design/DAFXgSq-5YI/VoGjxBH0387phr6s29IV1A/view?utm_content=DAFXgSq-5YI&utm_campaign=designshare&utm_medium=link&utm_source=publishshare)
+  - [User Flow-Chart (Figma)](https://www.figma.com/file/TTOAG3ee2VSnR9JWF2aG6l/Crowdfunding-Project?node-id=0%3A1&t=wOw8Y89TyRAGQ2p3-0)
+  - [GitHub MVP Submission Folder](https://github.com/SheCodesAus/she-codes-crowdfunding-api-project-Ms-KL/tree/main/project_submission/MVP%20Submission)
   
 ### **Part A Submission:** 
-  - Deployed Project (Fly): https://icy-dew-540.fly.dev/projects/
-  - Submission Document (Canva): https://tinyurl.com/kg-drf-part-a-submission
-  - Insomnia Export (Canva): <insert>
-  - Insomnia Screenshots (Canva): https://tinyurl.com/kg-drf-insomnia-screenshots
-  - Insomnia Walk-through (Loom video):
-  - Browsable API Walk-through (Loom video):
+  - [Deployed Project (Fly)](https://icy-dew-540.fly.dev/projects/)
+  - [Submission Document (Canva)](https://www.canva.com/design/DAFYscsU8w8/eiO7sj6_0qJGhFXIMqWkKQ/view?utm_content=DAFYscsU8w8&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink)
+  - [Insomnia Screenshots (Canva)](https://www.canva.com/design/DAFYscsU8w8/eiO7sj6_0qJGhFXIMqWkKQ/view?utm_content=DAFYscsU8w8&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink#5)
+  - [GitHub Part A Submission Folder](https://github.com/SheCodesAus/she-codes-crowdfunding-api-project-Ms-KL/tree/readme/project_submission/Part%20A%20Submission)
 
 ---
 ## **Features**
 ---
-
+See Also: [Project Requirements Checklist](https://www.canva.com/design/DAFYscsU8w8/eiO7sj6_0qJGhFXIMqWkKQ/view?utm_content=DAFYscsU8w8&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink#2)
 ### **User Accounts**
 
 - [X] Username
@@ -103,7 +104,7 @@ Communitree is a <insert here>
 ---
 ## Additional features
 ---
-
+See Also [MVP Submission - Features Page](https://www.canva.com/design/DAFXgSq-5YI/VoGjxBH0387phr6s29IV1A/view?utm_content=DAFXgSq-5YI&utm_campaign=designshare&utm_medium=link&utm_source=publishshare#11) | [Part A Submission - Features Page](https://www.canva.com/design/DAFYscsU8w8/eiO7sj6_0qJGhFXIMqWkKQ/view?utm_content=DAFYscsU8w8&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink#10)
 ### **User Experience:**
 
 - [X] { Filter Pledges and Projects }
@@ -147,19 +148,15 @@ Communitree is a <insert here>
 
 ### **Links & Screenshots:**
 
-- [X] A link to the deployed project: 
-  - https://icy-dew-540.fly.dev/users/
-- [X] A screenshot of Insomnia, demonstrating a successful GET method for any endpoint: 
-  - https://tinyurl.com/kg-drf-insomnia-screenshots
-- [X] A screenshot of Insomnia, demonstrating a successful POST method for any endpoint.
-  - https://tinyurl.com/kg-drf-insomnia-screenshots
-- [X] A screenshot of Insomnia, demonstrating a token being returned.
-  - https://tinyurl.com/kg-drf-insomnia-screenshots
-- [ ] Your refined API specification and Database Schema.
+- [X] A [link](https://icy-dew-540.fly.dev/users/) to the deployed project
+- [X] A [screenshot](https://www.canva.com/design/DAFYscsU8w8/eiO7sj6_0qJGhFXIMqWkKQ/view?utm_content=DAFYscsU8w8&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink#5) of Insomnia, demonstrating a successful GET method for any endpoint
+- [X] A [screenshot](https://www.canva.com/design/DAFYscsU8w8/eiO7sj6_0qJGhFXIMqWkKQ/view?utm_content=DAFYscsU8w8&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink#5) of Insomnia, demonstrating a successful POST method for any endpoint
+- [X] A [screenshot](https://www.canva.com/design/DAFYscsU8w8/eiO7sj6_0qJGhFXIMqWkKQ/view?utm_content=DAFYscsU8w8&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink#5) of Insomnia, demonstrating a token being returned 
+- [X] Your refined [API Specification (2 pages)](https://www.canva.com/design/DAFYscsU8w8/eiO7sj6_0qJGhFXIMqWkKQ/view?utm_content=DAFYscsU8w8&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink#8) and [Database Schema](https://www.canva.com/design/DAFYscsU8w8/eiO7sj6_0qJGhFXIMqWkKQ/view?utm_content=DAFYscsU8w8&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink#7).
 
 ### **Documentation:**
 
-*Step by step instructions for how to register a new user and create a new project (i.e. endpoints and body data).*
+*Step by step [instructions](https://www.canva.com/design/DAFYscsU8w8/eiO7sj6_0qJGhFXIMqWkKQ/view?utm_content=DAFYscsU8w8&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink#6) for how to register a new user and create a new project (i.e. endpoints and body data).*
 
 1. Create User
 
