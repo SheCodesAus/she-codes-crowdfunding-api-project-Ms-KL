@@ -5,6 +5,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ('id', 'username', 'email', 'is_active', 'password','bio','avatar')
+        # fields = ('id', 'username', 'email', 'is_active', 'password','bio','avatar','comments','projects','pledges')
 
         extra_kwargs = {
             'email':{
@@ -33,9 +34,28 @@ class CustomUserDetail(CustomUserSerializer):
 
 class ChangePasswordSerializer(serializers.Serializer):
 
-    model = CustomUser
     """
     Serializer for password change endpoint.
     """
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
+
+# alt:
+
+# from projects.models import Project, Pledge, Comment
+# from projects.serializers import CommentSerializer, ProjectDetailSerializer, PledgeDetailSerializer
+
+# class CustomUserSerializer(serializers.ModelSerializer):
+    # alt:
+    # owner = serializers.ReadOnlyField(source='customuser_comments')
+    # projects = serializers.ReadOnlyField(source='customuser_projects')
+    # pledges = serializers.ReadOnlyField(source='customuser_pledges')
+
+# class CustomUserDetail(CustomUserSerializer):
+#     comments = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+#     projects = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+#     pledges = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+#     class Meta:
+#         model = CustomUser
+#         fields = ('id', 'username', 'email', 'is_active','bio','avatar','comments','projects','pledges')
+#         read_only_fields = ['id']
