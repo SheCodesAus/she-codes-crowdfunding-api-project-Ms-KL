@@ -29,12 +29,12 @@ class CustomUserSerializer(serializers.ModelSerializer):
 class CustomUserDetail(CustomUserSerializer):
     # below based on ProjectSerializer approach for owner
     comments = CommentSerializer(many=True, source='commenter_comments')
-    projects = PledgeSerializer(many=True, source='supporter_pledges')
-    pledges = ProjectSerializer(many=True, source='owner_projects')
+    pledges = PledgeSerializer(many=True, source='supporter_pledges')
+    projects = ProjectSerializer(many=True, source='owner_projects')
     class Meta:
         model = CustomUser
         fields = ('id', 'username', 'email', 'is_active','bio','avatar','comments','pledges','projects')
-        read_only_fields = ['id']
+        read_only_fields = ['id','comments','pledges','projects']
 
 # Start of Change Password
 
