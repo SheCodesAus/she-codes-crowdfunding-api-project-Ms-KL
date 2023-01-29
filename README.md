@@ -63,7 +63,8 @@ Communitree is a <insert here>
   - [X] Create
   - [X] Retrieve
   - [X] Update
-  - [X] Destroy
+  - [ ] Destroy -> *not required*
+    - user can make themselves inactive. delete not activated to keep db integrity. Admin can still delete through admin portal.
 
 ### **Implement suitable permissions**
 
@@ -77,7 +78,7 @@ Communitree is a <insert here>
 - Pledge
   - [X] Limit who can create
   - [ ] Limit who can retrieve -> *not required*
-  - [X] Limit who can update
+  - [X] Limit who can update -> *can only edit non-amount fields*
   - [X] Limit who can delete
 - User
   - [ ] Limit who can retrieve -> *not required*
