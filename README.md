@@ -1,14 +1,10 @@
-# Communitree: DRF Crowdfunding Project
-
+# {{ Communitree: DRF Crowdfunding Project }}
 
 Communitree is a <insert here>
-
-<br>
 
 ---
 ## **TL:DR Links**
 ---
-<br>
 
 ### **MVP Submission:**
   - Submission Document (Canva): https://tinyurl.com/kg-drf-mvp-submission
@@ -22,20 +18,15 @@ Communitree is a <insert here>
   - Insomnia Walk-through (Loom video):
   - Browsable API Walk-through (Loom video):
 
-<br>
-
 ---
 ## **Features**
 ---
-<br>
 
 ### **User Accounts**
 
 - [X] Username
 - [X] Email Address
 - [X] Password
-
-<br>
 
 ### **Project**
 
@@ -53,8 +44,6 @@ Communitree is a <insert here>
   - [X] The supporter
   - [X] Whether the pledge is anonymous
   - [X] A comment to go with the pledge
-
-<br>
 
 ### <b>Implement suitable update delete</b>
 
@@ -76,28 +65,24 @@ Communitree is a <insert here>
   - [X] Update
   - [X] Destroy
 
-<br>
-
 ### **Implement suitable permissions**
 
 *Note: Not all of these may be required for your project, if you have not included one of these please justify why.**
 
 - Project
   - [X] Limit who can create
-  - [*not required*] Limit who can retrieve
+  - [-] Limit who can retrieve -> *not required*
   - [X] Limit who can update
   - [X] Limit who can delete
 - Pledge
   - [X] Limit who can create
-  - [*not required*] Limit who can retrieve
+  - [-] Limit who can retrieve -> *not required*
   - [X] Limit who can update
   - [X] Limit who can delete
 - User
-  - [*not required*] Limit who can retrieve
+  - [-] Limit who can retrieve -> *not required*
   - [X] Limit who can update
   - [X] Limit who can delete
-
-<br>
 
 ### **Implement relevant status codes**
 
@@ -105,74 +90,77 @@ Communitree is a <insert here>
 - [X] Create returns 201
 - [X] Not found returns 404
 
-<br>
-
 ### **Handle failed requests gracefully** 
 
 - [X] 404 response returns JSON rather than text
-
-<br>
+  - Note: navigation to an unexpected page (eg: pledges/abc/) will return a custom text error message. However expected pages with no data to return yet (eg: pledges/100/) will return JSON
 
 ### **Use token authentication**
 
 - [X] implement /api-token-auth/
 
-<br>
-
 ---
 ## Additional features
 ---
-<br>
 
-### **User Interaction:**
-* [X] Filter Pledges and Projects
-  - Filter pledges by supporter and project. 
-  - Filter projects by is_open and owner.
-* [X] Fields added to User
-  - First Name, Last Name, Bio and Avatar added
-* [X] Change Password
-  - Change password functionality added
+### **User Experience:**
+
+- [X] { Filter Pledges and Projects }
+
+{{ Filter pledges by supporter and project. Filter projects by is_open and owner. }}
+
+- [X] { User Fields and History }
+
+{{ First Name, Last Name, Bio and Avatar added. User Comments, Pledges and Projects history listed in Custom User Detail }}
+
+- [X] { Change Password }
+
+{{ Change password functionality added }}
+
+- [X] { Comments }
+
+{{ Comments feature added for users to interact with project }}
+
+= [X] { Pledge and Comment History }
+
+{{ Pledge and Comment List displayed in Project Detail }}
 
 ### **System Features:**
-* [X] Unique field value restrictions
-  - project.title , user.email, user.username restricted; must be unique
-  - throws integrity error with re-entry trigger if not unique
-* [X] Properties added
-  - sum_pledges & goal_vs_pledges added in projects.serializers
+
+- [X] { Unique field value restrictions }
+
+{{ project.title , user.email, user.username restricted; must be unique: throws integrity error with re-entry trigger if not unique }}
+
+- [X] { Properties added }
+
+{{ sum_pledge, goal_balance & funding_status added in Project Detail }}
 
 ### **External libraries used:**
 
 * [X] django-filter
 
-<br>
-
 ---
 ## Part A Submission
 ---
 
-<br>
 
 ### **Links & Screenshots:**
 
 - [X] A link to the deployed project: 
   - https://icy-dew-540.fly.dev/users/
-- [ ] A screenshot of Insomnia, demonstrating a successful GET method for any endpoint: 
+- [X] A screenshot of Insomnia, demonstrating a successful GET method for any endpoint: 
   - https://tinyurl.com/kg-drf-insomnia-screenshots
-- [ ] A screenshot of Insomnia, demonstrating a successful POST method for any endpoint.
+- [X] A screenshot of Insomnia, demonstrating a successful POST method for any endpoint.
   - https://tinyurl.com/kg-drf-insomnia-screenshots
-- [ ] A screenshot of Insomnia, demonstrating a token being returned.
+- [X] A screenshot of Insomnia, demonstrating a token being returned.
   - https://tinyurl.com/kg-drf-insomnia-screenshots
 - [ ] Your refined API specification and Database Schema.
-
-<br>
 
 ### **Documentation:**
 
 *Step by step instructions for how to register a new user and create a new project (i.e. endpoints and body data).*
 
-<br>
-
-#### 1. Create User
+1. Create User
 
 ```shell
     curl --request POST \
@@ -187,7 +175,7 @@ Communitree is a <insert here>
     }'
 ```
 
-#### 2. Sign in User
+2. Sign in User
 
 ```shell
     curl --request POST \
@@ -199,7 +187,7 @@ Communitree is a <insert here>
     }'
 ```
 
-#### 3. Create Project
+3. Create Project
 
 ```shell
     curl --request POST \
