@@ -71,16 +71,16 @@ Communitree is a <insert here>
 
 - Project
   - [X] Limit who can create
-  - [-] Limit who can retrieve -> *not required*
+  - [ ] Limit who can retrieve -> *not required*
   - [X] Limit who can update
   - [X] Limit who can delete
 - Pledge
   - [X] Limit who can create
-  - [-] Limit who can retrieve -> *not required*
+  - [ ] Limit who can retrieve -> *not required*
   - [X] Limit who can update
   - [X] Limit who can delete
 - User
-  - [-] Limit who can retrieve -> *not required*
+  - [ ] Limit who can retrieve -> *not required*
   - [X] Limit who can update
   - [X] Limit who can delete
 
@@ -121,7 +121,7 @@ Communitree is a <insert here>
 
 {{ Comments feature added for users to interact with project }}
 
-= [X] { Pledge and Comment History }
+- [X] { Pledge and Comment History }
 
 {{ Pledge and Comment List displayed in Project Detail }}
 
