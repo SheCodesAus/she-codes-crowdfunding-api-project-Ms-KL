@@ -14,7 +14,7 @@ Welcome to Communitree, where tree-huggers gather to make a real impact on the u
   - [GitHub MVP Submission Folder](https://github.com/SheCodesAus/she-codes-crowdfunding-api-project-Ms-KL/tree/main/project_submission/MVP%20Submission)
   
 ### **Part A Submission:** 
-  - [Deployed Project (Fly)](https://icy-dew-540.fly.dev/projects/)
+  - [Deployed Project (Fly)](https://icy-dew-540.fly.dev/)
   - [Submission Document (Canva)](https://www.canva.com/design/DAFYscsU8w8/eiO7sj6_0qJGhFXIMqWkKQ/view?utm_content=DAFYscsU8w8&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink)
   - [Insomnia Screenshots (Canva)](https://www.canva.com/design/DAFYscsU8w8/eiO7sj6_0qJGhFXIMqWkKQ/view?utm_content=DAFYscsU8w8&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink#5)
   - [GitHub Part A Submission Folder](https://github.com/SheCodesAus/she-codes-crowdfunding-api-project-Ms-KL/tree/readme/project_submission/Part%20A%20Submission)
@@ -127,6 +127,10 @@ See Also [MVP Submission - Features Page](https://www.canva.com/design/DAFXgSq-5
 
 {{ Pledge and Comment List displayed in Project Detail }}
 
+- [X] { Custom API Root }
+
+{{ As per Ben's suggestion 02/02/23 }}
+
 ### **System Features:**
 
 - [X] { Unique field value restrictions }
@@ -148,7 +152,7 @@ See Also [MVP Submission - Features Page](https://www.canva.com/design/DAFXgSq-5
 
 ### **Links & Screenshots:**
 
-- [X] A [link](https://icy-dew-540.fly.dev/projects/) to the deployed project
+- [X] A [link](https://icy-dew-540.fly.dev/) to the deployed project
 - [X] A [screenshot](https://www.canva.com/design/DAFYscsU8w8/eiO7sj6_0qJGhFXIMqWkKQ/view?utm_content=DAFYscsU8w8&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink#5) of Insomnia, demonstrating a successful GET method for any endpoint
 - [X] A [screenshot](https://www.canva.com/design/DAFYscsU8w8/eiO7sj6_0qJGhFXIMqWkKQ/view?utm_content=DAFYscsU8w8&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink#5) of Insomnia, demonstrating a successful POST method for any endpoint
 - [X] A [screenshot](https://www.canva.com/design/DAFYscsU8w8/eiO7sj6_0qJGhFXIMqWkKQ/view?utm_content=DAFYscsU8w8&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink#5) of Insomnia, demonstrating a token being returned 
