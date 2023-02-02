@@ -14,26 +14,46 @@ from .models import CustomUser
 from .serializers import CustomUserSerializer, ChangePasswordSerializer, CustomUserDetail
 from projects.permissions import IsOwnProfile
 
-class CustomUserList(APIView):
+# class CustomUserList(APIView):
 
-    def get(self, request):
-        users = CustomUser.objects.all()
-        serializer = CustomUserSerializer(users, many=True)
-        return Response(serializer.data)
-        #same as project
+#     def get(self, request):
+#         users = CustomUser.objects.all()
+#         serializer = CustomUserSerializer(users, many=True)
+#         return Response(serializer.data)
+#         #same as project
+
+#     def post(self, request):
+#         serializer = CustomUserSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         else:
+#             if 'email' in serializer.errors:
+#                 return Response({"error":"This email is associated with another user. Please login or choose an alternative email."}, status=status.HTTP_400_BAD_REQUEST)
+#             else:
+#                 return Response(
+#                     serializer.errors,
+#                     status=status.HTTP_400_BAD_REQUEST)
+
+class CustomUserList(generics.ListCreateAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = CustomUserSerializer
 
     def post(self, request):
-        serializer = CustomUserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        if request.user.is_authenticated:
+            return Response({"error": "You cannot create a new user while you are logged in."})
         else:
-            if 'email' in serializer.errors:
-                return Response({"error":"This email is associated with another user. Please login or choose an alternative email."}, status=status.HTTP_400_BAD_REQUEST)
+            serializer = CustomUserSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
-                return Response(
-                    serializer.errors,
-                    status=status.HTTP_400_BAD_REQUEST)
+                if 'email' in serializer.errors:
+                    return Response({"error":"This email is associated with another user. Please login or choose an alternative email."}, status=status.HTTP_400_BAD_REQUEST)
+                else:
+                    return Response(
+                        serializer.errors,
+                        status=status.HTTP_400_BAD_REQUEST)
 
 class CustomUserDetailView(generics.RetrieveUpdateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnProfile]
