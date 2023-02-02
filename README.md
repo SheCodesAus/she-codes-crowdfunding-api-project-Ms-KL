@@ -148,7 +148,7 @@ See Also [MVP Submission - Features Page](https://www.canva.com/design/DAFXgSq-5
 
 ### **Links & Screenshots:**
 
-- [X] A [link](https://icy-dew-540.fly.dev/users/) to the deployed project
+- [X] A [link](https://icy-dew-540.fly.dev/projects/) to the deployed project
 - [X] A [screenshot](https://www.canva.com/design/DAFYscsU8w8/eiO7sj6_0qJGhFXIMqWkKQ/view?utm_content=DAFYscsU8w8&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink#5) of Insomnia, demonstrating a successful GET method for any endpoint
 - [X] A [screenshot](https://www.canva.com/design/DAFYscsU8w8/eiO7sj6_0qJGhFXIMqWkKQ/view?utm_content=DAFYscsU8w8&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink#5) of Insomnia, demonstrating a successful POST method for any endpoint
 - [X] A [screenshot](https://www.canva.com/design/DAFYscsU8w8/eiO7sj6_0qJGhFXIMqWkKQ/view?utm_content=DAFYscsU8w8&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink#5) of Insomnia, demonstrating a token being returned 

@@ -26,12 +26,16 @@ def error_404(request, exception):
 
 handler404 = error_404
 
+# API Root ---
+from projects.views import api_root
+# https://www.django-rest-framework.org/tutorial/5-relationships-and-hyperlinked-apis/
+# https://stackoverflow.com/a/49393797
+
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path("", api_root),
+    path('admin/', admin.site.urls, name='admin'),
     path('api-auth/', include('rest_framework.urls')), # adds login button
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'), # adds generate token url
     path('users/', include('users.urls')),
     path("", include('projects.urls')), #getting access to project urls
 ]
-
-

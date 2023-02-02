@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import Http404
 
-from rest_framework import status, generics, permissions
+from rest_framework import status, generics, permissions, renderers
 from .models import Project, Pledge, Comment
 from .serializers import ProjectSerializer, PledgeSerializer, ProjectDetailSerializer , PledgeDetailSerializer, CommentSerializer
 from .permissions import IsOwnerOrReadOnly, IsSupporterOrReadOnly, IsCommenterOrReadOnly
@@ -12,6 +12,12 @@ from rest_framework.exceptions import NotFound
 from django.db import IntegrityError #unique = True handling
 
 from django_filters.rest_framework import DjangoFilterBackend
+
+#-- API-Root Config
+from rest_framework.decorators import api_view
+from rest_framework.reverse import reverse
+from users.models import CustomUser
+from users.serializers import CustomUserSerializer
 
 class ProjectList(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -80,3 +86,17 @@ class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsCommenterOrReadOnly]
+
+@api_view(["GET"])
+def api_root(request, format=None):
+    return Response(
+        {
+            "projects": reverse("project-list", request=request, format=format),
+            "comments": reverse("comment-list", request=request, format=format),
+            "pledges": reverse("pledge-list", request=request, format=format),
+            "users": reverse("customuser-list", request=request, format=format),
+        }
+    )
+
+# https://www.django-rest-framework.org/tutorial/5-relationships-and-hyperlinked-apis/
+# https://stackoverflow.com/a/49393797
