@@ -1,3 +1,11 @@
+NOTE: 
+* this repo was deployed to Fly. However:
+  * to continue working on this project, it was forked to: https://github.com/Ms-KL/she-codes-crowdfunding-api-project-Ms-KL
+  * improvements have since been made to this project using the above new [fork](https://github.com/Ms-KL/she-codes-crowdfunding-api-project-Ms-KL)
+  * the new [fork](https://github.com/Ms-KL/she-codes-crowdfunding-api-project-Ms-KL) has since been redeployed to fly with the changes
+* as a result, this repo will not match the final deployed project in fly. Please see [fork](https://github.com/Ms-KL/she-codes-crowdfunding-api-project-Ms-KL) for up-to-date repo that matches the deployed version.
+
+
 # {{ Communitree: DRF Crowdfunding Project }}
 
 Welcome to Communitree, where tree-huggers gather to make a real impact on the urban forest of their community. Local Governments, schools and environmental organisations can create projects to raise funds for community busy bees and planting days/events. Supporters can pledge resources to help these projects. 
