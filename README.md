@@ -1,9 +1,12 @@
-NOTE: 
-* this repo was deployed to Fly. However:
-  * to continue working on this project, it was forked to: https://github.com/Ms-KL/she-codes-crowdfunding-api-project-Ms-KL
+SUBMISSION + DEPLOYMENT NOTE: 
+* For project submission, this repo was deployed to Fly
+* However to continue working on this project after submission: 
+  *  it was forked to: https://github.com/Ms-KL/she-codes-crowdfunding-api-project-Ms-KL
   * improvements have since been made to this project using the above new [fork](https://github.com/Ms-KL/she-codes-crowdfunding-api-project-Ms-KL)
   * the new [fork](https://github.com/Ms-KL/she-codes-crowdfunding-api-project-Ms-KL) has since been redeployed to fly with the changes
-* as a result, this repo will not match the final deployed project in fly. Please see [fork](https://github.com/Ms-KL/she-codes-crowdfunding-api-project-Ms-KL) for up-to-date repo that matches the deployed version.
+* As a result: 
+  * this repo will not match the final deployed project in fly. 
+  * Please see [fork](https://github.com/Ms-KL/she-codes-crowdfunding-api-project-Ms-KL) for up-to-date repo that matches the deployed version.
 
 
 # {{ Communitree: DRF Crowdfunding Project }}
